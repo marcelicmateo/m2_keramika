@@ -1,0 +1,160 @@
+---
+// 04 · Wabi-sabi — quiet craft minimalism: clay and ash, paper grain, asymmetric calm, Newsreader.
+import { getEntry } from 'astro:content';
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Shot from '../../designs/04/Shot.astro';
+import Lightbox from '../../designs/04/Lightbox.astro';
+import Enso from '../../designs/04/Enso.astro';
+import hero from '../../assets/bazen.jpg';
+import { url } from '../../url';
+import '../../designs/04/style.css';
+
+const s = (await getEntry('stranica', 'stranica'))!.data;
+const { usluge } = (await getEntry('usluge', 'usluge'))!.data;
+const galerija = (await getEntry('galerija', 'galerija'))!.data;
+const cjenik = (await getEntry('cjenik', 'cjenik'))!.data;
+
+const tel = `tel:${s.telefon.replace(/\s/g, '')}`;
+const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s.adresa);
+const nb = (t: string) => t.replace(/ (?=(m[²¹]|cm|€)(?!\p{L}))/gu, ' ');
+const roman = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii'];
+const druga = cjenik.naslov_druga_cijena;
+const grad = s.adresa.split(',').pop()?.trim();
+---
+<Base>
+  <header class="top">
+    <a class="top__brand" href={url('dizajn/04/')}>M² Keramika</a>
+    <nav class="top__nav" aria-label="Sadržaj">
+      <a href="#usluge">usluge</a>
+      <a href="#radovi">radovi</a>
+      <a href="#cjenik">cjenik</a>
+    </nav>
+    <a class="top__tel" href={tel}><span>nazovite</span> {s.telefon}</a>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="naslov">
+      <p class="hero__side" aria-hidden="true">keramika · {grad}</p>
+      <div class="hero__text">
+        <Enso class="hero__enso" />
+        <h1 id="naslov">{s.slogan}</h1>
+        <p class="hero__call">
+          <span class="label">Nazovite</span>
+          <a class="hero__tel" href={tel}>{s.telefon}</a>
+          <a class="quiet" href={`mailto:${s.email}`}>{s.email}</a>
+        </p>
+      </div>
+      <figure class="hero__img">
+        <Picture src={hero} alt="" formats={['avif', 'webp']} widths={[400, 800, 1200]} sizes="(min-width: 56rem) 38vw, 80vw" loading="eager" />
+      </figure>
+    </section>
+
+    <section class="intro rise" aria-labelledby="uvod">
+      <h2 id="uvod">{s.uvod.naslov}</h2>
+      <p>{s.uvod.tekst}</p>
+    </section>
+
+    <section class="services" id="usluge" aria-labelledby="usluge-h">
+      <h2 id="usluge-h" class="label">Usluge</h2>
+      <ol role="list">
+        {usluge.map((u, i) => (
+          <li class="svc rise">
+            <span class="svc__n" aria-hidden="true">{roman[i] ?? i + 1}</span>
+            <div>
+              <h3>{u.naslov}</h3>
+              <p class="svc__k">{u.istaknuto}</p>
+              <p class="svc__d">{u.opis}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="quality rise" aria-labelledby="kvaliteta">
+      <h2 id="kvaliteta" class="label">{s.kvaliteta.naslov}</h2>
+      <p>{s.kvaliteta.tekst}</p>
+    </section>
+
+    <section class="works" id="radovi" aria-labelledby="radovi-h">
+      <h2 id="radovi-h">{s.projekti_naslov}</h2>
+      <ul class="gallery" role="list" data-group>
+        {galerija.slike.map((g) => (
+          <li class="rise">
+            <figure>
+              <Shot src={g.slika} alt={g.opis} sizes="(min-width: 56rem) 34vw, 80vw" />
+              <figcaption>{g.opis}</figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+
+      {galerija.prije_poslije.map((set) => {
+        const koraci = [
+          { label: 'prije', src: set.prije },
+          ...(set.tijekom ? [{ label: 'u procesu', src: set.tijekom }] : []),
+          { label: 'poslije', src: set.poslije },
+        ];
+        return (
+          <figure class="set rise" data-group>
+            <figcaption>
+              <h3>{set.naslov}</h3>
+              <p>{set.opis}</p>
+            </figcaption>
+            <ol class="set__steps" role="list">
+              {koraci.map((k) => (
+                <li>
+                  <Shot src={k.src} alt={`${k.label} – ${set.opis}`} sizes="(min-width: 56rem) 24vw, 70vw" />
+                  <p class="set__l">{k.label}</p>
+                </li>
+              ))}
+            </ol>
+          </figure>
+        );
+      })}
+    </section>
+
+    <section class="prices rise" id="cjenik" aria-labelledby="cjenik-h">
+      <h2 id="cjenik-h">Cjenik*</h2>
+      <table>
+        <caption class="visually-hidden">Cjenik keramičarskih usluga</caption>
+        <thead>
+          <tr>
+            <th scope="col">Usluga</th>
+            <th scope="col" class="u">Jedinica</th>
+            <th scope="col" class="c">{cjenik.naslov_cijena}</th>
+            {druga && <th scope="col" class="c">{druga}</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {cjenik.stavke.map((r) => (
+            <tr>
+              <th scope="row">{nb(r.usluga)}</th>
+              <td class="u">{r.jedinica}</td>
+              <td class="c" data-label={cjenik.naslov_cijena} data-u={r.jedinica}>{nb(r.cijena)}</td>
+              {druga && <td class="c" data-label={druga} data-u={r.jedinica}>{nb(r.druga_cijena ?? '–')}</td>}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p class="note">*{cjenik.napomena}</p>
+      <a class="quiet" href={url('cjenik.csv')} download="cjenik-m2-keramika.csv">Preuzmite cjenik (CSV) ↓</a>
+    </section>
+  </main>
+
+  <footer class="foot" aria-labelledby="kontakt">
+    <div class="foot__in">
+      <Enso class="foot__enso" />
+      <h2 id="kontakt" class="label">Kontakt</h2>
+      <p class="foot__text">{s.kontakt_tekst.trim()}</p>
+      <a class="foot__tel" href={tel}>{s.telefon}</a>
+      <a class="quiet" href={`mailto:${s.email}`}>{s.email}</a>
+      <address>
+        {s.naziv} · vl. {s.vlasnik}<br />
+        <a class="quiet" href={maps} target="_blank" rel="noopener">{s.adresa}</a>
+      </address>
+      <p class="copy">© {new Date().getFullYear()}</p>
+    </div>
+  </footer>
+  <Lightbox />
+</Base>

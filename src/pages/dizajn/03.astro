@@ -1,0 +1,221 @@
+---
+// 03 · Nacrt — technical blueprint: drafting paper, white line work, dimension lines and a title block.
+import { getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Shot from '../../designs/03/Shot.astro';
+import Lightbox from '../../designs/03/Lightbox.astro';
+import Detail from '../../designs/03/Details.astro';
+import { url } from '../../url';
+import '../../designs/03/style.css';
+
+const s = (await getEntry('stranica', 'stranica'))!.data;
+const { usluge } = (await getEntry('usluge', 'usluge'))!.data;
+const galerija = (await getEntry('galerija', 'galerija'))!.data;
+const cjenik = (await getEntry('cjenik', 'cjenik'))!.data;
+
+const tel = `tel:${s.telefon.replace(/\s/g, '')}`;
+const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s.adresa);
+const nb = (t: string) => t.replace(/ (?=(m[²¹]|cm|€)(?!\p{L}))/gu, ' ');
+const nn = (i: number) => String(i + 1).padStart(2, '0');
+const druga = cjenik.naslov_druga_cijena;
+const godina = new Date().getFullYear();
+const tiles = [120, 180, 240, 300, 360, 420];
+---
+<Base>
+  <header class="top">
+    <a class="top__brand" href={url('dizajn/03/')}><b>M²</b> KERAMIKA</a>
+    <nav class="top__nav" aria-label="Sadržaj">
+      <a href="#usluge">Usluge</a>
+      <a href="#radovi">Radovi</a>
+      <a href="#cjenik">Cjenik</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <a class="top__tel" href={tel}><span>TEL</span> {s.telefon}</a>
+  </header>
+
+  <main class="sheet">
+    <section class="hero" aria-labelledby="naslov">
+      <div class="hero__text">
+        <p class="tag">List 01 — Keramičarski radovi · {s.adresa.split(',').pop()?.trim()}</p>
+        <h1 id="naslov">{s.slogan}</h1>
+        <div class="hero__cta">
+          <a class="btn" href={tel}>Nazovite {s.telefon}</a>
+          <a class="btn btn--line" href={`mailto:${s.email}`}>{s.email}</a>
+        </div>
+      </div>
+
+      <figure class="hero__draw">
+        <svg viewBox="0 0 640 480" role="img" aria-label="Nacrt obložene zidne plohe s tušem i nišom">
+          <defs>
+            <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <line x1="0" y1="0" x2="0" y2="8" stroke="currentColor" stroke-width="1" opacity="0.55" />
+            </pattern>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M0 1L10 5L0 9" fill="none" stroke="currentColor" stroke-width="1.5" />
+            </marker>
+          </defs>
+          <g class="thin">
+            {tiles.map((x) => <path d={`M${x} 60V420`} pathLength="1" />)}
+            <path d="M60 180H480M60 300H480" pathLength="1" />
+          </g>
+          <g class="thick">
+            <rect x="60" y="60" width="420" height="360" pathLength="1" />
+            <rect x="300" y="200" width="120" height="60" pathLength="1" />
+            <rect x="306" y="206" width="108" height="48" pathLength="1" class="thin" />
+            <path d="M150 60V124M138 124H162L156 136H144Z" pathLength="1" />
+            <circle cx="150" cy="250" r="9" pathLength="1" />
+            <path d="M150 241V259M141 250H159" pathLength="1" class="thin" />
+            <path d="M90 416H270" pathLength="1" />
+          </g>
+          <rect x="60" y="420" width="420" height="14" fill="url(#hatch)" />
+          <g class="dim">
+            <path d="M60 36H480M60 28V44M480 28V44" pathLength="1" />
+            <text x="270" y="28" text-anchor="middle">2100</text>
+            <path d="M30 60V420M22 60H38M22 420H38" pathLength="1" />
+            <text x="24" y="240" text-anchor="middle" transform="rotate(-90 24 240)">1800</text>
+            <path d="M440 456H280" marker-end="url(#arr)" pathLength="1" />
+            <text x="460" y="460">PAD</text>
+          </g>
+          <g class="call">
+            <path d="M450 120H500" pathLength="1" /><circle cx="450" cy="120" r="3" />
+            <text x="506" y="124">① PLOČICE</text>
+            <path d="M410 230H500" pathLength="1" /><circle cx="410" cy="230" r="3" />
+            <text x="506" y="234">② NIŠA</text>
+            <path d="M470 400L500 340" pathLength="1" /><circle cx="470" cy="400" r="3" />
+            <text x="506" y="338">③ HIDRO-</text>
+            <text x="506" y="354">IZOLACIJA</text>
+          </g>
+        </svg>
+        <figcaption class="tag">Primjer: oblaganje zida tuša · M 1:20</figcaption>
+      </figure>
+
+      <dl class="tblock">
+        <div class="tblock__wide"><dt>Projekt</dt><dd>{s.naziv}</dd></div>
+        <div><dt>Izvođač</dt><dd>{s.vlasnik}</dd></div>
+        <div><dt>Adresa</dt><dd>{s.adresa}</dd></div>
+        <div class="tblock__wide"><dt>Telefon</dt><dd><a href={tel}>{s.telefon}</a></dd></div>
+        <div><dt>E-pošta</dt><dd><a href={`mailto:${s.email}`}>{s.email}</a></dd></div>
+        <div><dt>List</dt><dd>01 / 06</dd></div>
+      </dl>
+    </section>
+
+    <section class="sec" aria-labelledby="uvod">
+      <p class="tag">List 02 — Opis</p>
+      <div class="intro">
+        <h2 id="uvod">{s.uvod.naslov}</h2>
+        <p class="lead">{s.uvod.tekst}</p>
+      </div>
+    </section>
+
+    <section class="sec" id="usluge" aria-labelledby="usluge-h">
+      <p class="tag">List 03 — Detalji</p>
+      <h2 id="usluge-h">Usluge</h2>
+      <ol class="details" role="list">
+        {usluge.map((u, i) => (
+          <li class="det">
+            <p class="det__head"><span>Detalj {String.fromCharCode(65 + i)}</span><span>M 1:5</span></p>
+            <Detail i={i} />
+            <h3>{u.naslov}</h3>
+            <p class="det__k">{u.istaknuto}</p>
+            <p class="det__d">{u.opis}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="sec" aria-labelledby="kvaliteta">
+      <div class="note-box">
+        <p class="tag">Napomena</p>
+        <h2 id="kvaliteta">{s.kvaliteta.naslov}</h2>
+        <p class="lead">{s.kvaliteta.tekst}</p>
+        <span class="stamp" aria-hidden="true">M²<small>keramika</small></span>
+      </div>
+    </section>
+
+    <section class="sec" id="radovi" aria-labelledby="radovi-h">
+      <p class="tag">List 04 — Snimke s terena</p>
+      <h2 id="radovi-h">{s.projekti_naslov}</h2>
+      <ul class="gallery" role="list" data-group>
+        {galerija.slike.map((g, i) => (
+          <li>
+            <figure>
+              <p class="ph">Foto {nn(i)}</p>
+              <Shot src={g.slika} alt={g.opis} sizes="(min-width: 64rem) 300px, (min-width: 36rem) 45vw, 90vw" />
+              <figcaption>{g.opis}</figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+
+      {galerija.prije_poslije.map((set) => {
+        const koraci = [
+          { label: 'Prije', src: set.prije },
+          ...(set.tijekom ? [{ label: 'U procesu', src: set.tijekom }] : []),
+          { label: 'Poslije', src: set.poslije },
+        ];
+        return (
+          <figure class="set" data-group>
+            <figcaption>
+              <h3>{set.naslov}</h3>
+              <p>{set.opis}</p>
+            </figcaption>
+            <ol class="set__steps" role="list">
+              {koraci.map((k, i) => (
+                <li>
+                  <p class="ph"><span>Faza {i + 1}</span> {k.label}</p>
+                  <Shot src={k.src} alt={`${k.label} – ${set.opis}`} sizes="(min-width: 64rem) 380px, 75vw" />
+                </li>
+              ))}
+            </ol>
+          </figure>
+        );
+      })}
+    </section>
+
+    <section class="sec" id="cjenik" aria-labelledby="cjenik-h">
+      <p class="tag">List 05 — Specifikacija</p>
+      <h2 id="cjenik-h">Cjenik*</h2>
+      <table class="spec">
+        <caption class="visually-hidden">Cjenik keramičarskih usluga</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="n">Poz.</th>
+            <th scope="col">Opis rada</th>
+            <th scope="col" class="u">Jed.</th>
+            <th scope="col" class="c">{cjenik.naslov_cijena}</th>
+            {druga && <th scope="col" class="c">{druga}</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {cjenik.stavke.map((r, i) => (
+            <tr>
+              <td class="n">{nn(i)}</td>
+              <th scope="row">{nb(r.usluga)}</th>
+              <td class="u">{r.jedinica}</td>
+              <td class="c" data-label={cjenik.naslov_cijena} data-u={r.jedinica}>{nb(r.cijena)}</td>
+              {druga && <td class="c" data-label={druga} data-u={r.jedinica}>{nb(r.druga_cijena ?? '–')}</td>}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div class="spec__foot">
+        <p>*{cjenik.napomena}</p>
+        <a class="btn btn--line" href={url('cjenik.csv')} download="cjenik-m2-keramika.csv">↓ Preuzmite cjenik (CSV)</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot sheet" id="kontakt" aria-labelledby="kontakt-h">
+    <p class="tag">List 06 — Kontakt</p>
+    <h2 id="kontakt-h" class="visually-hidden">Kontakt</h2>
+    <div class="foot__block">
+      <p class="foot__text">{s.kontakt_tekst.trim()}</p>
+      <div class="foot__tel"><span class="lbl">Telefon</span><a href={tel}>{s.telefon}</a></div>
+      <div><span class="lbl">E-pošta</span><a href={`mailto:${s.email}`}>{s.email}</a></div>
+      <div><span class="lbl">Vlasnik</span>{s.vlasnik}</div>
+      <div><span class="lbl">Adresa</span><a href={maps} target="_blank" rel="noopener">{s.adresa}</a></div>
+      <div><span class="lbl">Izdano</span>{s.naziv} · {godina}</div>
+    </div>
+  </footer>
+  <Lightbox />
+</Base>
