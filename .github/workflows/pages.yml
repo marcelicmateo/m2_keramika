@@ -37,6 +37,8 @@ jobs:
           DEV_SITE: '1'
       - run: npx playwright install --with-deps chromium
       - run: npx playwright test
+        env:
+          DEV_SITE: '1'
       - uses: actions/upload-pages-artifact@v5
         with:
           path: dist

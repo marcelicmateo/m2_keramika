@@ -14,6 +14,8 @@ const stranica = (await getEntry('stranica', 'stranica'))!.data;
 const og = await getImage({ src: hero, width: 1200, format: 'jpg' });
 const ogUrl = new URL(og.src, Astro.site).href;
 const noindex = Boolean(process.env.DEV_SITE);
+// Design bar only where the alternative designs are built (dev site, astro dev), see astro.config.mjs.
+const designBar = noindex || import.meta.env.DEV;
 ---
 <!doctype html>
 <html lang="hr">
@@ -32,7 +34,7 @@ const noindex = Boolean(process.env.DEV_SITE);
     <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site).href} />
   </head>
   <body>
-    <DesignBar />
+    {designBar && <DesignBar />}
     <div class="page">
       <slot />
     </div>

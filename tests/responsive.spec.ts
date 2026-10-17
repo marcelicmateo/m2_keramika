@@ -25,8 +25,9 @@ for (const width of [320, 390, 768, 1366, 1920]) {
   });
 }
 
-// Alternative designs: same basics, at a phone, a small phone and a laptop width.
-for (const d of designs.filter((d) => d.slug !== '00')) {
+// Alternative designs (dev site only, build with DEV_SITE=1): same basics at a small phone, a phone and a laptop width.
+const dev = Boolean(process.env.DEV_SITE);
+for (const d of dev ? designs.filter((d) => d.slug !== '00') : []) {
   for (const width of [320, 390, 1366]) {
     test(`dizajn ${d.slug} radi na širini ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
@@ -38,6 +39,13 @@ for (const d of designs.filter((d) => d.slug !== '00')) {
     });
   }
 }
+
+test('produkcija ima samo originalni dizajn', async ({ page, request }) => {
+  test.skip(dev, 'samo za produkcijski build');
+  await page.goto('./');
+  await expect(page.locator('.dbar')).toHaveCount(0);
+  expect((await request.get(designPath('01'))).status()).toBe(404);
+});
 
 test('cjenik.csv postoji i počinje s UTF-8 BOM', async ({ request }) => {
   const res = await request.get('cjenik.csv');
