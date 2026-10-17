@@ -2,19 +2,46 @@
   <img alt="" />
   <p class="lightbox__cap"></p>
   <form method="dialog"><button class="lightbox__close" aria-label="Zatvori">✕</button></form>
+  <button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Prethodna fotografija">‹</button>
+  <button class="lightbox__nav lightbox__nav--next" type="button" aria-label="Sljedeća fotografija">›</button>
 </dialog>
 
 <script>
   const dlg = document.getElementById('lightbox') as HTMLDialogElement;
   const img = dlg.querySelector('img')!;
   const cap = dlg.querySelector('p')!;
+  let group: HTMLAnchorElement[] = [];
+  let i = 0;
+
+  // Show photo n of the current group (the row the clicked photo belongs to), wrapping around.
+  const show = (n: number) => {
+    i = (n + group.length) % group.length;
+    img.src = group[i].href;
+    img.alt = cap.textContent = group[i].querySelector('img')?.alt ?? '';
+    dlg.classList.toggle('is-single', group.length < 2);
+  };
+
   document.addEventListener('click', (e) => {
     const a = (e.target as Element).closest<HTMLAnchorElement>('a[data-lightbox]');
     if (!a) return;
     e.preventDefault();
-    img.src = a.href;
-    img.alt = cap.textContent = a.querySelector('img')?.alt ?? '';
+    group = [...(a.closest('.strip') ?? document).querySelectorAll<HTMLAnchorElement>('a[data-lightbox]')];
+    show(group.indexOf(a));
     dlg.showModal();
+  });
+
+  dlg.querySelector('.lightbox__nav--prev')!.addEventListener('click', () => show(i - 1));
+  dlg.querySelector('.lightbox__nav--next')!.addEventListener('click', () => show(i + 1));
+  dlg.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') show(i - 1);
+    if (e.key === 'ArrowRight') show(i + 1);
+  });
+  // Swipe left/right on phones.
+  let x0 = 0;
+  dlg.addEventListener('touchstart', (e) => (x0 = e.touches[0].clientX), { passive: true });
+  dlg.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 50) show(dx < 0 ? i + 1 : i - 1);
   });
   // Click on the dark area around the photo closes; Esc and the button close natively.
   dlg.addEventListener('click', (e) => {
@@ -50,6 +77,23 @@
     border-radius: var(--radius);
   }
   .lightbox__cap { font-size: var(--fs-small); text-align: center; max-width: var(--measure); }
+  .lightbox__nav {
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--c-on-dark);
+    color: var(--c-ink);
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .lightbox__nav--prev { left: var(--space-2); }
+  .lightbox__nav--next { right: var(--space-2); }
+  .lightbox.is-single .lightbox__nav { display: none; }
   .lightbox__close {
     position: absolute;
     top: var(--space-2);
