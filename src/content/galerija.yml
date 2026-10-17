@@ -7,8 +7,6 @@ slike:
     opis: Polaganje velikih pločica s izgledom kamena na vanjskoj terasi
   - slika: ../assets/uploads/podrum.jpg
     opis: Podrum s novim smeđim pravokutnim podnim pločicama i soklom
-  - slika: ../assets/uploads/Screenshot From 2026-10-17 13-48-19-1.png
-    opis: test test
 prije_poslije:
   - naslov: Obnova kupaonice
     prije: ../assets/uploads/kupaonica-prije.jpg
