@@ -1,0 +1,162 @@
+---
+// 05 · Brutalist: one exposed black grid, Space Grotesk + Space Mono, safety orange as the only colour.
+import { getEntry } from 'astro:content';
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Photo from '../../designs/05/Photo.astro';
+import Lightbox from '../../designs/05/Lightbox.astro';
+import hero from '../../assets/bazen.jpg';
+import { url } from '../../url';
+import '../../designs/05/style.css';
+
+const s = (await getEntry('stranica', 'stranica'))!.data;
+const { usluge } = (await getEntry('usluge', 'usluge'))!.data;
+const galerija = (await getEntry('galerija', 'galerija'))!.data;
+const cjenik = (await getEntry('cjenik', 'cjenik'))!.data;
+
+const tel = `tel:${s.telefon.replace(/\s/g, '')}`;
+const grad = s.adresa.split(',').pop()!.trim();
+const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s.adresa);
+const pad = (n: number) => String(n).padStart(2, '0');
+const nb = (t: string) => t.replace(/ (?=(m[²¹]|cm|€)(?!\p{L}))/gu, ' ');
+const druga = cjenik.naslov_druga_cijena;
+const brojSlika = galerija.slike.length + galerija.prije_poslije.reduce((n, p) => n + (p.tijekom ? 3 : 2), 0);
+const indeks = [
+  ['02', 'Usluge', 'usluge'],
+  ['04', 'Radovi', 'radovi'],
+  ['05', 'Cjenik', 'cjenik'],
+  ['06', 'Kontakt', 'kontakt'],
+];
+---
+<Base>
+  <div class="b5" id="vrh">
+    <header class="top">
+      <a class="top__brand" href="#vrh">{s.naziv}</a>
+      <a class="top__mail" href={`mailto:${s.email}`}>{s.email}</a>
+      <a class="top__tel" href={tel}><span>Nazovite</span> {s.telefon}</a>
+    </header>
+
+    <main>
+      <section class="grid hero" aria-labelledby="h1">
+        <p class="cell hero__meta">
+          <span>{grad}</span><span>Usluge: {pad(usluge.length)}</span><span>Fotografije: {pad(brojSlika)}</span><span>Stavke cjenika: {pad(cjenik.stavke.length)}</span>
+        </p>
+        <h1 class="cell hero__title" id="h1">{s.slogan}</h1>
+        <div class="cell hero__sq" aria-hidden="true"><b>M²</b><small>1 m × 1 m</small></div>
+        <div class="cell hero__photo">
+          <Picture src={hero} alt="" formats={['avif', 'webp']} widths={[800, 1200, 1600]} sizes="(min-width: 56rem) 58vw, 100vw" loading="eager" fetchpriority="high" />
+        </div>
+        <a class="cell hero__tel" href={tel}><span class="lbl">Nazovite</span><b>{s.telefon}</b><span class="arr" aria-hidden="true">→</span></a>
+        <a class="cell hero__mail" href={`mailto:${s.email}`}><span class="lbl">Pišite</span><b>{s.email}</b></a>
+        <nav class="cell hero__idx" aria-label="Sadržaj">
+          <ol role="list">
+            {indeks.map(([n, t, id]) => <li><a href={`#${id}`}><span>{n}</span>{t}</a></li>)}
+          </ol>
+        </nav>
+      </section>
+
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker__in">
+          {[0, 1].map(() => <span>{usluge.map((u) => <>{u.naslov}<i>■</i></>)}</span>)}
+        </div>
+      </div>
+
+      <section class="grid two" aria-labelledby="uvod">
+        <div class="cell sh"><span class="sh__n">01</span><span>Uvod</span></div>
+        <h2 class="cell big" id="uvod">{s.uvod.naslov}</h2>
+        <p class="cell text">{s.uvod.tekst}</p>
+      </section>
+
+      <section class="grid svcs" id="usluge" aria-labelledby="usluge-h">
+        <div class="cell sh"><span class="sh__n">02</span><h2 id="usluge-h">Usluge</h2><span class="sh__c">[{pad(usluge.length)}]</span></div>
+        {usluge.map((u, i) => (
+          <article class="cell svc">
+            <p class="svc__n">{pad(i + 1)}/{pad(usluge.length)}</p>
+            <h3>{u.naslov}</h3>
+            <p class="svc__hi"><mark>{u.istaknuto}</mark></p>
+            <p>{u.opis}</p>
+          </article>
+        ))}
+      </section>
+
+      <section class="grid" aria-labelledby="kvaliteta">
+        <div class="cell sh"><span class="sh__n">03</span><span>Kvaliteta</span></div>
+        <div class="cell quality">
+          <h2 id="kvaliteta">{s.kvaliteta.naslov}</h2>
+          <p>{s.kvaliteta.tekst}</p>
+        </div>
+      </section>
+
+      <section class="grid works" id="radovi" aria-labelledby="radovi-h">
+        <div class="cell sh"><span class="sh__n">04</span><h2 id="radovi-h">{s.projekti_naslov}</h2><span class="sh__c">[{pad(brojSlika)}]</span></div>
+        <ul class="gal" role="list" data-group>
+          {galerija.slike.map((p, i) => (
+            <li class="cell fig">
+              <Photo class="ph" src={p.slika} alt={p.opis} sizes="(min-width: 56rem) 25vw, 50vw" />
+              <p><b>IMG_{pad(i + 1)}</b> {p.opis}</p>
+            </li>
+          ))}
+        </ul>
+        {galerija.prije_poslije.map((set) => {
+          const koraci = [
+            { label: 'Prije', src: set.prije },
+            ...(set.tijekom ? [{ label: 'Tijekom', src: set.tijekom }] : []),
+            { label: 'Poslije', src: set.poslije },
+          ];
+          return (
+            <figure class="set" data-group>
+              <figcaption class="cell set__cap"><h3>{set.naslov}</h3><p>{set.opis}</p></figcaption>
+              <ol class="steps" role="list">
+                {koraci.map((k, i) => (
+                  <li class="cell step">
+                    <p class="step__l"><span>{String.fromCharCode(65 + i)}.</span> {k.label}{i < koraci.length - 1 && <span aria-hidden="true"> →</span>}</p>
+                    <Photo class="ph" src={k.src} alt={`${k.label} – ${set.opis}`} sizes="(min-width: 56rem) 33vw, 34vw" />
+                  </li>
+                ))}
+              </ol>
+            </figure>
+          );
+        })}
+      </section>
+
+      <section class="grid" id="cjenik" aria-labelledby="cjenik-h">
+        <div class="cell sh"><span class="sh__n">05</span><h2 id="cjenik-h">Cjenik*</h2><span class="sh__c">[{pad(cjenik.stavke.length)}]</span></div>
+        <div class="cell flush">
+          <table class="pl">
+            <caption class="vh">Cjenik keramičarskih usluga</caption>
+            <thead>
+              <tr><th scope="col">Usluga</th><th scope="col">Jedinica</th><th scope="col" class="num">{cjenik.naslov_cijena}</th>{druga && <th scope="col" class="num">{druga}</th>}</tr>
+            </thead>
+            <tbody>
+              {cjenik.stavke.map((r) => (
+                <tr>
+                  <th scope="row">{nb(r.usluga)}</th>
+                  <td class="unit" data-label="Jedinica">{r.jedinica}</td>
+                  <td class="num" data-label={cjenik.naslov_cijena}>{nb(r.cijena)}</td>
+                  {druga && <td class="num" data-label={druga}>{nb(r.druga_cijena ?? '–')}</td>}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="grid two">
+          <p class="cell note">*{cjenik.napomena}</p>
+          <a class="cell csv" href={url('cjenik.csv')} download="cjenik-m2-keramika.csv"><span aria-hidden="true">[↓]</span> Preuzmite cjenik (CSV)</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="grid foot" id="kontakt" aria-labelledby="kontakt-h">
+      <div class="cell sh"><span class="sh__n">06</span><h2 id="kontakt-h">Kontakt</h2></div>
+      <a class="cell foot__tel" href={tel}>{s.telefon}</a>
+      <p class="cell foot__txt">{s.kontakt_tekst.trim()}</p>
+      <div class="cell foot__kv">
+        <p><span class="lbl">E-mail</span><a href={`mailto:${s.email}`}>{s.email}</a></p>
+        <p><span class="lbl">Vlasnik</span>{s.vlasnik}</p>
+        <p><span class="lbl">Adresa</span><a href={maps} target="_blank" rel="noopener">{s.adresa}</a></p>
+      </div>
+      <p class="cell foot__end"><span>© {new Date().getFullYear()} {s.naziv}</span><a href="#vrh">↑ Na vrh</a></p>
+    </footer>
+  </div>
+  <Lightbox />
+</Base>
