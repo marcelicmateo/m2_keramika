@@ -1,0 +1,149 @@
+---
+// 20 · Foto prvo — photo-first portfolio: huge images, almost no chrome, a floating call button.
+import { getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Pic from '../../designs/20/Pic.astro';
+import Lightbox from '../../designs/20/Lightbox.astro';
+import { url } from '../../url';
+import '../../designs/20/style.css';
+
+const s = (await getEntry('stranica', 'stranica'))!.data;
+const { usluge } = (await getEntry('usluge', 'usluge'))!.data;
+const galerija = (await getEntry('galerija', 'galerija'))!.data;
+const cjenik = (await getEntry('cjenik', 'cjenik'))!.data;
+const tel = `tel:${s.telefon.replace(/\s/g, '')}`;
+const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s.adresa);
+const nb = (t: string) => t.replace(/ (?=(m[²¹]|cm|€)(?!\p{L}))/gu, ' ');
+const druga = cjenik.naslov_druga_cijena;
+const two = (n: number) => String(n).padStart(2, '0');
+const W = [400, 800, 1200, 1600];
+const hero = galerija.slike.slice(0, 2);
+const rest = galerija.slike.slice(2);
+---
+<Base>
+  <div class="fp">
+    <header class="top">
+      <a class="brand" href={url()}>{s.naziv}</a>
+      <nav class="top__nav" aria-label="Sadržaj">
+        <a href="#radovi">Radovi</a><a href="#usluge">Usluge</a><a href="#cjenik">Cjenik</a><a href="#kontakt">Kontakt</a>
+      </nav>
+      <a class="top__tel" href={tel}>{s.telefon}</a>
+    </header>
+
+    <main>
+      <div data-group id="radovi">
+        <div class="hero">
+          {hero.map((g, i) => (
+            <figure class:list={['frame', `frame--${i}`]}>
+              <Pic src={g.slika} alt={g.opis} sizes={hero.length > 1 ? '(min-width: 48rem) 50vw, 100vw' : '100vw'} widths={W} eager />
+              <figcaption><span>{two(i + 1)}</span>{g.opis}</figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <section class="intro">
+          <h1>{s.slogan}</h1>
+          <p>{s.naziv} · <a href={tel}>{s.telefon}</a> · <a href={`mailto:${s.email}`}>{s.email}</a></p>
+        </section>
+
+        {rest.length > 0 && (
+          <section class="stream" aria-label={s.projekti_naslov}>
+            <h2 class="label">{s.projekti_naslov}</h2>
+            {rest.map((g, i) => (
+              <figure class:list={['frame', `frame--s${i % 3}`]}>
+                <Pic src={g.slika} alt={g.opis} sizes="(min-width: 48rem) 60vw, 100vw" widths={W} />
+                <figcaption><span>{two(i + 3)}</span>{g.opis}</figcaption>
+              </figure>
+            ))}
+          </section>
+        )}
+      </div>
+
+      {galerija.prije_poslije.map((set) => {
+        const koraci = [
+          { label: 'Prije', src: set.prije },
+          ...(set.tijekom ? [{ label: 'U procesu', src: set.tijekom }] : []),
+          { label: 'Poslije', src: set.poslije },
+        ];
+        return (
+          <section class="set" aria-label={set.naslov} data-group>
+            <header class="set__head">
+              <h2>{set.naslov}</h2>
+              <p>{set.opis}</p>
+            </header>
+            <ol class="set__row" role="list">
+              {koraci.map((k) => (
+                <li>
+                  <Pic src={k.src} alt={`${k.label} – ${set.opis}`} sizes="(min-width: 48rem) 33vw, 85vw" widths={W} />
+                  <p class="set__label">{k.label}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        );
+      })}
+
+      <section class="text">
+        <h2>{s.uvod.naslov}</h2>
+        <p>{s.uvod.tekst}</p>
+      </section>
+
+      <section class="usluge" id="usluge" aria-labelledby="usluge-h">
+        <h2 id="usluge-h" class="label">Usluge</h2>
+        <ol class="usluge__list" role="list">
+          {usluge.map((u, i) => (
+            <li>
+              <span class="num" aria-hidden="true">{two(i + 1)}</span>
+              <h3>{u.naslov}</h3>
+              <p class="usluge__hi">{u.istaknuto}</p>
+              <p class="usluge__opis">{u.opis}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section class="text text--quote">
+        <h2>{s.kvaliteta.naslov}</h2>
+        <p>{s.kvaliteta.tekst}</p>
+      </section>
+
+      <section class="cjenik" id="cjenik" aria-labelledby="cjenik-h">
+        <h2 id="cjenik-h" class="label">Cjenik*</h2>
+        <table>
+          <caption class="sr">Cjenik keramičarskih usluga</caption>
+          <thead>
+            <tr><th scope="col">Usluga</th><th scope="col">Jed.</th><th scope="col" class="price">{cjenik.naslov_cijena}</th>{druga && <th scope="col" class="price">{druga}</th>}</tr>
+          </thead>
+          <tbody>
+            {cjenik.stavke.map((r) => (
+              <tr>
+                <th scope="row">{nb(r.usluga)}</th>
+                <td class="unit">{r.jedinica}</td>
+                <td class="price" data-label={cjenik.naslov_cijena}>{nb(r.cijena)}</td>
+                {druga && <td class="price" data-label={druga}>{nb(r.druga_cijena ?? '–')}</td>}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p class="note">*{cjenik.napomena}</p>
+        <a class="link" href={url('cjenik.csv')} download="cjenik-m2-keramika.csv"><Icon name="download" /><span>Preuzmite cjenik (CSV)</span></a>
+      </section>
+    </main>
+
+    <footer class="foot" id="kontakt">
+      <h2 class="label">Kontakt</h2>
+      <a class="foot__big" href={tel}>{s.telefon}</a>
+      <a class="foot__big foot__mail" href={`mailto:${s.email}`}>{s.email}</a>
+      <p class="foot__text">{s.kontakt_tekst.trim()}</p>
+      <address>
+        {s.naziv}, vl. {s.vlasnik}<br />
+        <a href={maps} target="_blank" rel="noopener">{s.adresa}</a>
+      </address>
+      <p class="copy">© {new Date().getFullYear()} {s.naziv}</p>
+    </footer>
+
+    <a class="fab" href={tel}><Icon name="phone" /><span>Nazovite</span></a>
+    <Lightbox />
+  </div>
+</Base>

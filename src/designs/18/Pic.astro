@@ -1,0 +1,18 @@
+---
+// A photo that opens large in the lightbox (or as the plain image without JS).
+import type { ImageMetadata } from 'astro';
+import { Picture, getImage } from 'astro:assets';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  sizes: string;
+  class?: string;
+  eager?: boolean;
+}
+const { src, alt, sizes, class: cls, eager } = Astro.props;
+const large = await getImage({ src, width: [1600, 1200, 800, 400].find((w) => w <= src.width) ?? 400, format: 'webp' });
+---
+<a class:list={['pic', cls]} href={large.src} data-lightbox>
+  <Picture src={src} alt={alt} formats={['avif', 'webp']} widths={[400, 800, 1200]} sizes={sizes} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+</a>
