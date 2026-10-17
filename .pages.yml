@@ -1,0 +1,148 @@
+# Pages CMS (https://pagescms.org) – uređivanje sadržaja stranice.
+# Sheme moraju odgovarati src/content.config.ts.
+settings:
+  commit:
+    identity: user
+
+media:
+  input: src/assets/uploads
+  output: ../assets/uploads
+  extensions: [jpg, jpeg, png, webp]
+
+content:
+  - name: stranica
+    label: Osnovni podaci i tekstovi
+    type: file
+    path: src/content/stranica.yml
+    format: yaml
+    fields:
+      - { name: naziv, label: Naziv obrta, type: string, required: true }
+      - { name: slogan, label: Slogan, type: string, required: true }
+      - name: telefon
+        label: Telefon
+        type: string
+        required: true
+        description: U obliku +385 95 123 4567
+      - { name: email, label: E-mail, type: string, required: true }
+      - { name: vlasnik, label: Vlasnik, type: string, required: true }
+      - { name: adresa, label: Adresa, type: string, required: true }
+      - name: seo_opis
+        label: Opis za Google
+        type: text
+        required: true
+        description: Jedna do dvije rečenice koje Google prikazuje ispod naslova stranice.
+      - name: uvod
+        label: Uvod
+        type: object
+        required: true
+        fields:
+          - { name: naslov, label: Naslov, type: string, required: true }
+          - { name: tekst, label: Tekst, type: text, required: true }
+      - name: kvaliteta
+        label: Kvaliteta
+        type: object
+        required: true
+        fields:
+          - { name: naslov, label: Naslov, type: string, required: true }
+          - { name: tekst, label: Tekst, type: text, required: true }
+      - { name: projekti_naslov, label: Naslov iznad galerije, type: string, required: true }
+      - name: kontakt_tekst
+        label: Tekst u kontaktu
+        type: text
+        required: true
+        description: Svaki red prikazuje se kao zaseban redak.
+
+  - name: usluge
+    label: Usluge
+    type: file
+    path: src/content/usluge.yml
+    format: yaml
+    fields:
+      - name: usluge
+        label: Usluge
+        type: object
+        required: true
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{naslov}"
+        fields:
+          - name: naslov
+            label: Naslov
+            type: string
+            required: true
+            description: Najviše 40 znakova
+            options: { maxlength: 40 }
+          - { name: istaknuto, label: Istaknuta rečenica, type: string, required: true }
+          - { name: opis, label: Opis, type: text, required: true }
+
+  - name: galerija
+    label: Galerija
+    type: file
+    path: src/content/galerija.yml
+    format: yaml
+    fields:
+      - name: slike
+        label: Fotografije
+        type: object
+        required: true
+        description: Najviše 16 fotografija. Fotografije šaljite kao JPG.
+        list:
+          max: 16
+          collapsible:
+            collapsed: true
+            summary: "{opis}"
+        fields:
+          - { name: slika, label: Fotografija, type: image, required: true }
+          - name: opis
+            label: Opis slike
+            type: string
+            required: true
+            description: Kratko opišite što je na slici (za Google i slabovidne).
+      - name: prije_poslije
+        label: Prije i poslije
+        type: object
+        required: true
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{naslov}"
+        fields:
+          - { name: naslov, label: Naslov, type: string, required: true }
+          - { name: prije, label: Prije, type: image, required: true }
+          - { name: tijekom, label: Tijekom radova (nije obavezno), type: image }
+          - { name: poslije, label: Poslije, type: image, required: true }
+          - name: opis
+            label: Opis
+            type: string
+            required: true
+            description: Kratko opišite radove (za Google i slabovidne).
+
+  - name: cjenik
+    label: Cjenik
+    type: file
+    path: src/content/cjenik.yml
+    format: yaml
+    fields:
+      - { name: napomena, label: Napomena, type: text, required: true }
+      - name: stavke
+        label: Stavke cjenika
+        type: object
+        required: true
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{usluga}"
+        fields:
+          - { name: usluga, label: Usluga, type: string, required: true }
+          - name: jedinica
+            label: Jedinica
+            type: select
+            required: true
+            options:
+              values: ["m²", "m¹", sat, kom]
+          - name: cijena
+            label: Cijena
+            type: string
+            required: true
+            description: Npr. 30 € ili ⅓ cijene postave po m²

@@ -1,0 +1,52 @@
+name: Dev site (GitHub Pages)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Astro's optimised-image cache: skips re-encoding photos that did not change.
+      - uses: actions/cache@v6
+        with:
+          path: node_modules/.astro
+          key: astro-${{ hashFiles('src/assets/**') }}
+          restore-keys: astro-
+      - run: npm run build
+        env:
+          SITE: https://marcelicmateo.github.io
+          BASE: /m2_keramika
+          DEV_SITE: '1'
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
