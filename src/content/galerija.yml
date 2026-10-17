@@ -1,16 +1,18 @@
-# TODO Marin: provjeriti opis
 slike:
-  - slika: "../assets/uploads/kuhinjski-otok.jpg"
-    opis: "Kuhinjski otok s crnim sudoperom obložen tamnim keramičkim pločama"
-  - slika: "../assets/uploads/kupaonica-tus.jpg"
-    opis: "Kupaonica u izradi s velikim bež pločicama i podnom tuš kadom"
-  - slika: "../assets/uploads/terasa.jpg"
-    opis: "Polaganje velikih pločica s izgledom kamena na vanjskoj terasi"
-  - slika: "../assets/uploads/podrum.jpg"
-    opis: "Podrum s novim smeđim pravokutnim podnim pločicama i soklom"
+  - slika: ../assets/uploads/kuhinjski-otok.jpg
+    opis: Kuhinjski otok s crnim sudoperom obložen tamnim keramičkim pločama
+  - slika: ../assets/uploads/kupaonica-tus.jpg
+    opis: Kupaonica u izradi s velikim bež pločicama i podnom tuš kadom
+  - slika: ../assets/uploads/terasa.jpg
+    opis: Polaganje velikih pločica s izgledom kamena na vanjskoj terasi
+  - slika: ../assets/uploads/podrum.jpg
+    opis: Podrum s novim smeđim pravokutnim podnim pločicama i soklom
+  - slika: ../assets/uploads/Screenshot From 2026-10-17 13-48-19-1.png
+    opis: test test
 prije_poslije:
-  - naslov: "Obnova kupaonice"
-    prije: "../assets/uploads/kupaonica-prije.jpg"
-    tijekom: "../assets/uploads/kupaonica-tijekom.jpg"
-    poslije: "../assets/uploads/kupaonica-poslije.jpg"
-    opis: "Stara kupaonica s kadom preuređena u modernu kupaonicu sa sivim pločicama i tušem"
+  - naslov: Obnova kupaonice
+    prije: ../assets/uploads/kupaonica-prije.jpg
+    tijekom: ../assets/uploads/kupaonica-tijekom.jpg
+    poslije: ../assets/uploads/kupaonica-poslije.jpg
+    opis: Stara kupaonica s kadom preuređena u modernu kupaonicu sa sivim pločicama
+      i tušem
