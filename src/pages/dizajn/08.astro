@@ -1,0 +1,174 @@
+---
+// 08 · Bilježnica majstora: a tiler's graph-paper notebook with taped photos, pen notes and pencil sketches.
+import { getEntry } from 'astro:content';
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Photo from '../../designs/08/Photo.astro';
+import Lightbox from '../../designs/08/Lightbox.astro';
+import hero from '../../assets/bazen.jpg';
+import { url } from '../../url';
+import '../../designs/08/style.css';
+
+const s = (await getEntry('stranica', 'stranica'))!.data;
+const { usluge } = (await getEntry('usluge', 'usluge'))!.data;
+const galerija = (await getEntry('galerija', 'galerija'))!.data;
+const cjenik = (await getEntry('cjenik', 'cjenik'))!.data;
+
+const tel = `tel:${s.telefon.replace(/\s/g, '')}`;
+const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s.adresa);
+const nb = (t: string) => t.replace(/ (?=(m[²¹]|cm|€)(?!\p{L}))/gu, ' ');
+const druga = cjenik.naslov_druga_cijena;
+const squiggle = 'M3 9C40 3 70 12 110 7S190 3 237 8';
+---
+<Base>
+  <header class="top">
+    <div class="sheet top__in">
+      <a class="brand" href="#vrh">{s.naziv}</a>
+      <nav class="top__nav" aria-label="Sekcije">
+        <a href="#usluge">usluge</a><a href="#radovi">radovi</a><a href="#cjenik">cjenik</a><a href="#kontakt">kontakt</a>
+      </nav>
+      <a class="top__tel" href={tel}><span class="vh">Nazovite </span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16.5v3a2 2 0 0 1-2.2 2A19.5 19.5 0 0 1 2.5 5.2 2 2 0 0 1 4.5 3h3a2 2 0 0 1 2 1.7l.6 3a2 2 0 0 1-.6 1.8L8.2 10.8a16 16 0 0 0 5 5l1.3-1.3a2 2 0 0 1 1.8-.6l3 .6a2 2 0 0 1 1.7 2Z" /></svg>{s.telefon}</a>
+    </div>
+  </header>
+
+  <main class="sheet" id="vrh">
+    <section class="hero" aria-labelledby="h1">
+      <div class="hero__text">
+        <h1 id="h1">{s.slogan}</h1>
+        <svg class="squiggle" viewBox="0 0 240 14" preserveAspectRatio="none" aria-hidden="true"><path d={squiggle} /></svg>
+        <div class="callme">
+          <p class="note note--red" aria-hidden="true">nazovite!</p>
+          <svg class="arrow" viewBox="0 0 90 60" aria-hidden="true"><path d="M4 8C34 2 62 14 72 46M60 38l12 10 6-15" /></svg>
+          <a class="callme__tel" href={tel}>
+            <span class="vh">Nazovite </span>{s.telefon}
+            <svg class="ring" viewBox="0 0 210 64" preserveAspectRatio="none" aria-hidden="true"><path d="M30 8C90-2 200 6 204 30S110 62 40 56 2 38 8 24 50 6 98 7" /></svg>
+          </a>
+        </div>
+        <a class="pen" href={`mailto:${s.email}`}><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l18-1-1 14-17 1ZM3.5 6.5l8.5 7 8.6-7.4" /></svg>{s.email}</a>
+      </div>
+      <figure class="hero__pic">
+        <span class="dim dim--top" aria-hidden="true"><span>120</span></span>
+        <span class="dim dim--side" aria-hidden="true"><span>90</span></span>
+        <div class="taped"><Picture src={hero} alt="" formats={['avif', 'webp']} widths={[400, 800, 1200]} sizes="(min-width: 56rem) 40vw, 86vw" loading="eager" fetchpriority="high" /></div>
+        <span class="note note--pencil angle" aria-hidden="true">90°</span>
+      </figure>
+    </section>
+
+    <section class="sec" aria-labelledby="uvod">
+      <p class="no" aria-hidden="true">1</p>
+      <h2 id="uvod">{s.uvod.naslov}</h2>
+      <p class="lead">{s.uvod.tekst}</p>
+    </section>
+
+    <section class="sec" id="usluge" aria-labelledby="usluge-h">
+      <p class="no" aria-hidden="true">2</p>
+      <h2 id="usluge-h">Usluge</h2>
+      <ul class="checks" role="list">
+        {usluge.map((u) => (
+          <li>
+            <svg class="box" viewBox="0 0 40 36" aria-hidden="true"><path class="box__sq" d="M4 7 31 4l2 27-28 1Z" /><path class="box__tick" d="M9 17l8 9L38 2" /></svg>
+            <div>
+              <h3>{u.naslov}</h3>
+              <p class="hi"><mark>{u.istaknuto}</mark></p>
+              <p>{u.opis}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="sec quality" aria-labelledby="kvaliteta">
+      <p class="no" aria-hidden="true">3</p>
+      <div class="postit">
+        <h2 id="kvaliteta">{s.kvaliteta.naslov}</h2>
+        <p>{s.kvaliteta.tekst}</p>
+      </div>
+      <svg class="sketch" viewBox="0 0 220 190" aria-hidden="true">
+        <g class="sketch__lines">
+          <path d="M20 60 120 30 200 70 100 104Z M22 62 121 31 198 72 99 103" />
+          <path d="M53 50 133 87M86 40 166 78M47 77 147 45M73 90 173 57" />
+          <path d="M20 60v70l80 40V104M100 170l100-36V70" />
+          <path d="M20 95l80 40 100-36" />
+        </g>
+        <path class="sketch__dim" d="M14 140l80 40M14 136l0 8M94 176l0 8" />
+        <text x="22" y="180" transform="rotate(26 52 165)">1 m²</text>
+      </svg>
+    </section>
+
+    <section class="sec" id="radovi" aria-labelledby="radovi-h">
+      <p class="no" aria-hidden="true">4</p>
+      <h2 id="radovi-h">{s.projekti_naslov}</h2>
+      <ul class="pols" role="list" data-group>
+        {galerija.slike.map((p) => (
+          <li class="pol">
+            <Photo class="ph" src={p.slika} alt={p.opis} sizes="(min-width: 56rem) 22vw, 42vw" />
+            <p>{p.opis}</p>
+          </li>
+        ))}
+      </ul>
+
+      {galerija.prije_poslije.map((set) => {
+        const koraci = [
+          { label: 'prije', src: set.prije },
+          ...(set.tijekom ? [{ label: 'tijekom', src: set.tijekom }] : []),
+          { label: 'poslije', src: set.poslije },
+        ];
+        return (
+          <figure class="set" data-group>
+            <figcaption><h3>{set.naslov}</h3><p>{set.opis}</p></figcaption>
+            <ol class="set__row" role="list">
+              {koraci.map((k) => (
+                <li class="pol">
+                  <Photo class="ph" src={k.src} alt={`${k.label} – ${set.opis}`} sizes="(min-width: 56rem) 22vw, 30vw" />
+                  <p class="set__label">{k.label}</p>
+                </li>
+              ))}
+            </ol>
+          </figure>
+        );
+      })}
+    </section>
+
+    <section class="sec" id="cjenik" aria-labelledby="cjenik-h">
+      <p class="no" aria-hidden="true">5</p>
+      <h2 id="cjenik-h">Cjenik*</h2>
+      <table class="pl">
+        <caption class="vh">Cjenik keramičarskih usluga</caption>
+        <thead>
+          <tr><th scope="col">Usluga</th><th scope="col">Jed.</th><th scope="col" class="num">{cjenik.naslov_cijena}</th>{druga && <th scope="col" class="num">{druga}</th>}</tr>
+        </thead>
+        <tbody>
+          {cjenik.stavke.map((r) => (
+            <tr>
+              <th scope="row">{nb(r.usluga)}</th>
+              <td class="unit">{r.jedinica}</td>
+              <td class="num" data-label={cjenik.naslov_cijena}>{nb(r.cijena)}</td>
+              {druga && <td class="num" data-label={druga}>{nb(r.druga_cijena ?? '–')}</td>}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p class="pl__note">*{cjenik.napomena}</p>
+      <a class="file" href={url('cjenik.csv')} download="cjenik-m2-keramika.csv"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 6v10a4 4 0 0 1-8 0V5a2.5 2.5 0 0 1 5 0v10a1 1 0 0 1-2 0V7" /></svg> Preuzmite cjenik (CSV)</a>
+    </section>
+  </main>
+
+  <footer class="sheet foot" id="kontakt">
+    <section class="sec" aria-labelledby="kontakt-h">
+      <p class="no" aria-hidden="true">6</p>
+      <h2 id="kontakt-h">Kontakt</h2>
+      <div class="foot__in">
+        <p class="foot__txt">{s.kontakt_tekst.trim()}</p>
+        <div class="card">
+          <p class="card__name">{s.naziv}</p>
+          <p class="card__owner">vl. {s.vlasnik}</p>
+          <a class="card__tel" href={tel}>{s.telefon}</a>
+          <a href={`mailto:${s.email}`}>{s.email}</a>
+          <a href={maps} target="_blank" rel="noopener">{s.adresa}</a>
+        </div>
+      </div>
+      <p class="foot__copy">© {new Date().getFullYear()} {s.naziv}</p>
+    </section>
+  </footer>
+  <Lightbox />
+</Base>
