@@ -20,9 +20,8 @@ const tel = `tel:${telefon.replace(/\s/g, '')}`;
       <Image src={logo} alt="M² Keramika" widths={[120, 160, 240, 320]} sizes="(min-width: 40rem) 160px, 120px" loading="eager" />
     </a>
     <nav class="header__actions" aria-label="Kontakt">
-      <Button href={tel} class="only-phone" aria-label={`Nazovite ${telefon}`}><Icon slot="icon" name="phone" />Nazovite</Button>
-      <Button href={tel} class="from-md"><Icon slot="icon" name="phone" />{telefon}</Button>
-      <Button href={`mailto:${email}`} class="from-md"><Icon slot="icon" name="mail" />{email}</Button>
+      <Button href={tel}><Icon slot="icon" name="phone" />{telefon}</Button>
+      <Button href={`mailto:${email}`}><Icon slot="icon" name="mail" />{email}</Button>
     </nav>
   </div>
 </header>
@@ -38,14 +37,15 @@ const tel = `tel:${telefon.replace(/\s/g, '')}`;
     padding-block: 0.375rem;
   }
   .header__logo { flex: none; border-radius: var(--radius); }
-  .header__logo img { width: 120px; }
-  .header__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-2); }
-  .from-md { display: none; }
+  .header__logo img { width: clamp(80px, 26vw, 120px); }
+  /* Phones: the two buttons stack on the right, slightly more compact. */
+  .header__actions { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-2); }
+  .header__actions :global(.btn) { justify-content: flex-start; padding: 0.5rem 0.75rem; font-size: 0.875rem; }
 
   @media (min-width: 40rem) {
     .header__in { padding-block: var(--space-4); }
     .header__logo img { width: 160px; }
-    .only-phone { display: none; }
-    .from-md { display: inline-flex; }
+    .header__actions { flex-direction: row; }
+    .header__actions :global(.btn) { padding: 0.75rem 1.25rem; font-size: 0.9375rem; }
   }
 </style>
