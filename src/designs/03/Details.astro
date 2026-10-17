@@ -1,0 +1,65 @@
+---
+// Small construction details (one per service), drawn as section views.
+interface Props {
+  i: number;
+}
+const { i } = Astro.props;
+---
+<svg class="detail" viewBox="0 0 240 140" aria-hidden="true" focusable="false">
+  <defs>
+    <pattern id={`h${i}`} width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="6" stroke="currentColor" stroke-width="1" opacity="0.5" />
+    </pattern>
+  </defs>
+  {i % 4 === 0 && (
+    <g>
+      <rect x="10" y="96" width="220" height="30" fill={`url(#h${i})`} stroke="currentColor" />
+      <rect x="10" y="88" width="220" height="8" fill="none" stroke="currentColor" stroke-dasharray="3 2" />
+      {[0, 1, 2, 3].map((k) => <rect x={14 + k * 54} y="74" width="50" height="14" fill="none" stroke="currentColor" stroke-width="1.6" />)}
+      <path d="M64 70V40M68 70V40M64 46H20M68 46H112" stroke="currentColor" fill="none" />
+      <text x="66" y="34" text-anchor="middle">FUGA</text>
+      <path d="M200 88L218 62H232" stroke="currentColor" fill="none" /><text x="232" y="56" text-anchor="end">LJEPILO</text>
+      <text x="16" y="138">PODLOGA</text>
+    </g>
+  )}
+  {i % 4 === 1 && (
+    <g>
+      <path d="M10 112C40 100 60 122 90 108S150 96 180 114S220 104 230 110V130H10Z" fill={`url(#h${i})`} stroke="currentColor" />
+      <path d="M10 88H230" stroke="currentColor" stroke-width="1.6" />
+      <path d="M10 88V112M230 88V110" stroke="currentColor" stroke-dasharray="3 2" fill="none" />
+      <rect x="70" y="72" width="100" height="16" rx="2" fill="none" stroke="currentColor" />
+      <rect x="110" y="76" width="20" height="8" rx="4" fill="none" stroke="currentColor" />
+      <path d="M200 44V86M196 50L200 44L204 50M196 80L200 86L204 80" stroke="currentColor" fill="none" />
+      <text x="194" y="64" text-anchor="end">RAVNINA</text>
+      <text x="16" y="40">NIVELACIJA</text>
+    </g>
+  )}
+  {i % 4 === 2 && (
+    <g>
+      <path d="M40 10V120H230" fill="none" stroke="currentColor" stroke-width="1.6" />
+      <path d="M10 10H40V130H230" fill="none" stroke="currentColor" opacity="0.5" />
+      <rect x="10" y="10" width="30" height="120" fill={`url(#h${i})`} />
+      <path d="M46 10V114H230" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="8 4" />
+      <path d="M52 10V108H230" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="8 4" />
+      <path d="M46 92Q46 114 68 114" fill="none" stroke="currentColor" stroke-width="5" opacity="0.6" />
+      <path d="M70 98L110 60H150" fill="none" stroke="currentColor" /><text x="154" y="64">TRAKA</text>
+      <text x="154" y="90">2 × NANOS</text>
+    </g>
+  )}
+  {i % 4 === 3 && (
+    <g>
+      <rect x="150" y="20" width="80" height="110" fill={`url(#h${i})`} stroke="currentColor" />
+      <path d="M150 62L30 74V84H40V80L150 72Z" fill="none" stroke="currentColor" stroke-width="1.6" />
+      <path d="M44 84V88" stroke="currentColor" />
+      <path d="M150 50L40 61" stroke="currentColor" stroke-dasharray="3 2" />
+      <path d="M90 56A30 30 0 0 1 92 66" fill="none" stroke="currentColor" />
+      <text x="70" y="48">PAD</text>
+      <path d="M40 100H150M40 96V104M150 96V104" stroke="currentColor" fill="none" /><text x="95" y="118" text-anchor="middle">PREPUST</text>
+    </g>
+  )}
+</svg>
+
+<style>
+  .detail { display: block; width: 100%; height: auto; color: var(--line); font: 500 9px var(--mono); letter-spacing: 0.04em; }
+  .detail text { fill: var(--muted); stroke: none; }
+</style>
