@@ -1,0 +1,86 @@
+<dialog id="lightbox" class="lb" aria-label="Uvećana fotografija">
+  <img alt="" />
+  <p class="lb__cap"><span class="lb__n"></span> <span class="lb__t"></span></p>
+  <form method="dialog"><button class="lb__close" aria-label="Zatvori">Zatvori ✕</button></form>
+  <button class="lb__nav lb__nav--prev" type="button" aria-label="Prethodna fotografija">←</button>
+  <button class="lb__nav lb__nav--next" type="button" aria-label="Sljedeća fotografija">→</button>
+</dialog>
+
+<script>
+  const dlg = document.getElementById('lightbox') as HTMLDialogElement;
+  const img = dlg.querySelector('img')!;
+  const n = dlg.querySelector('.lb__n')!;
+  const t = dlg.querySelector('.lb__t')!;
+  let group: HTMLAnchorElement[] = [];
+  let i = 0;
+
+  // Show photo k of the current group (the set the clicked photo belongs to), wrapping around.
+  const show = (k: number) => {
+    i = (k + group.length) % group.length;
+    img.src = group[i].href;
+    img.alt = t.textContent = group[i].querySelector('img')?.alt ?? '';
+    n.textContent = `${String(i + 1).padStart(2, '0')}/${String(group.length).padStart(2, '0')}`;
+    dlg.classList.toggle('is-single', group.length < 2);
+  };
+
+  document.addEventListener('click', (e) => {
+    const a = (e.target as Element).closest<HTMLAnchorElement>('a[data-lightbox]');
+    if (!a) return;
+    e.preventDefault();
+    group = [...(a.closest('[data-group]') ?? document).querySelectorAll<HTMLAnchorElement>('a[data-lightbox]')];
+    show(group.indexOf(a));
+    dlg.showModal();
+  });
+
+  dlg.querySelector('.lb__nav--prev')!.addEventListener('click', () => show(i - 1));
+  dlg.querySelector('.lb__nav--next')!.addEventListener('click', () => show(i + 1));
+  dlg.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') show(i - 1);
+    if (e.key === 'ArrowRight') show(i + 1);
+  });
+  let x0 = 0;
+  dlg.addEventListener('touchstart', (e) => (x0 = e.touches[0].clientX), { passive: true });
+  dlg.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 50) show(dx < 0 ? i + 1 : i - 1);
+  });
+  dlg.addEventListener('click', (e) => {
+    if (e.target === dlg) dlg.close();
+  });
+</script>
+
+<style>
+  .lb {
+    max-width: none;
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 64px 16px 16px;
+    border: 0;
+    background: #fff;
+    color: #000;
+  }
+  .lb[open] { display: grid; grid-template-rows: 1fr auto; justify-items: center; align-items: center; gap: 12px; }
+  .lb::backdrop { background: #fff; }
+  .lb img { max-width: 100%; max-height: calc(100svh - 150px); width: auto; object-fit: contain; }
+  .lb__cap { justify-self: start; max-width: 60ch; font-size: 0.875rem; border-top: 2px solid #000; padding-top: 8px; }
+  .lb__n { font-weight: 700; color: var(--red); margin-right: 12px; font-variant-numeric: tabular-nums; }
+  .lb__nav, .lb__close {
+    position: absolute;
+    min-width: 48px;
+    height: 48px;
+    border: 0;
+    background: #000;
+    color: #fff;
+    font: 700 1.25rem/1 var(--sans);
+    cursor: pointer;
+  }
+  .lb__nav { bottom: 16px; }
+  .lb__nav--prev { right: 72px; }
+  .lb__nav--next { right: 16px; background: var(--red); }
+  .lb.is-single .lb__nav { display: none; }
+  .lb__close { top: 8px; right: 16px; padding: 0 16px; font-size: 0.875rem; }
+  .lb__nav:hover, .lb__close:hover { background: var(--red); }
+  @media (max-width: 40rem) { .lb__cap { margin-right: 128px; } }
+</style>
