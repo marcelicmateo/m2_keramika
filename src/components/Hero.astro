@@ -28,8 +28,8 @@ const { slogan } = Astro.props;
   .hero {
     display: flex;
     align-items: flex-end;
-    min-height: 60svh;
-    padding-top: 8rem; /* room for the header laid over the photo */
+    min-height: clamp(21rem, 45svh, 26rem);
+    padding-top: 9rem; /* room for the header laid over the photo */
     color: var(--c-on-dark);
   }
   .hero .bg-img { object-position: 32% 44%; }
@@ -51,7 +51,7 @@ const { slogan } = Astro.props;
     text-shadow: 0 1px 8px rgb(0 0 0 / 0.4);
   }
   @media (min-width: 40rem) {
-    .hero { min-height: min(80svh, 46rem); }
+    .hero { min-height: min(70svh, 40rem); }
     p { max-width: none; }
   }
 </style>
