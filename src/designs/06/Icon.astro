@@ -1,0 +1,18 @@
+---
+// Line icons drawn for this design (stroke = currentColor). The service icons follow the service order.
+interface Props {
+  name: 'tiles' | 'level' | 'drop' | 'sill' | 'phone' | 'mail' | 'download' | 'pin';
+}
+const paths = {
+  tiles: 'M6 6h16v16H6zM26 6h16v16H26zM6 26h16v16H6zM26 26h16v16H26z',
+  level: 'M4 18h40v12H4zM18 18v12M30 18v12M24 21.5a2.5 2.5 0 1 0 0 5a2.5 2.5 0 1 0 0-5',
+  drop: 'M24 5c7 9 13 16 13 23a13 13 0 0 1-26 0c0-7 6-14 13-23ZM18 30a6 6 0 0 0 6 6',
+  sill: 'M12 36V18a12 12 0 0 1 24 0v18M24 6v30M12 22h24M6 36h36l-2 5H8z',
+  phone: 'M44 33.8v6a4 4 0 0 1-4.4 4 39.6 39.6 0 0 1-17.2-6.2 39 39 0 0 1-12-12A39.6 39.6 0 0 1 4.2 8.4 4 4 0 0 1 8.2 4h6a4 4 0 0 1 4 3.4c.2 2 .7 3.8 1.4 5.6a4 4 0 0 1-1 4.2L16 19.8a32 32 0 0 0 12 12l2.6-2.6a4 4 0 0 1 4.2-.8c1.8.6 3.6 1.2 5.6 1.4a4 4 0 0 1 3.4 4Z',
+  mail: 'M6 10h36v28H6zM6 12l18 14 18-14',
+  download: 'M24 6v24M14 20l10 10 10-10M8 40h32',
+  pin: 'M24 44s14-12.5 14-24a14 14 0 0 0-28 0c0 11.5 14 24 14 24ZM24 15a5 5 0 1 0 0 10a5 5 0 1 0 0-10',
+};
+const { name } = Astro.props;
+---
+<svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d={paths[name]} /></svg>
