@@ -1,0 +1,67 @@
+---
+// A row of photos that scrolls left/right: swipe, or use the arrow buttons.
+interface Props {
+  label: string;
+}
+const { label } = Astro.props;
+---
+<div class="strip">
+  <ul class="strip__row" role="list" aria-label={label}>
+    <slot />
+  </ul>
+  <button class="strip__btn strip__btn--prev" type="button" aria-label="Prethodne fotografije">‹</button>
+  <button class="strip__btn strip__btn--next" type="button" aria-label="Sljedeće fotografije">›</button>
+</div>
+
+<script>
+  for (const strip of document.querySelectorAll<HTMLElement>('.strip')) {
+    const row = strip.querySelector<HTMLElement>('.strip__row')!;
+    const update = () => strip.classList.toggle('is-scrollable', row.scrollWidth > row.clientWidth + 1);
+    strip.querySelectorAll('.strip__btn').forEach((btn) =>
+      btn.addEventListener('click', () =>
+        row.scrollBy({ left: (btn.classList.contains('strip__btn--prev') ? -0.8 : 0.8) * row.clientWidth, behavior: 'smooth' }),
+      ),
+    );
+    addEventListener('resize', update);
+    update();
+  }
+</script>
+
+<style>
+  .strip { position: relative; }
+  .strip__row {
+    list-style: none;
+    padding: 0 0 var(--space-3);
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 80%;
+    gap: var(--space-4);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+  }
+  .strip__row > :global(li) { scroll-snap-align: start; }
+  @media (min-width: 40rem) { .strip__row { grid-auto-columns: 42%; } }
+  @media (min-width: 60rem) { .strip__row { grid-auto-columns: calc((100% - 3 * var(--space-5)) / 3.4); gap: var(--space-5); } }
+
+  /* Arrows only when there is something to scroll. */
+  .strip__btn {
+    display: none;
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--c-on-dark);
+    color: var(--c-ink);
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.35);
+  }
+  .strip__btn--prev { left: calc(-1 * var(--space-3)); }
+  .strip__btn--next { right: calc(-1 * var(--space-3)); }
+  .strip.is-scrollable .strip__btn { display: block; }
+</style>
