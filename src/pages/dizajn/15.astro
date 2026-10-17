@@ -1,0 +1,147 @@
+---
+// 15 · Tamni mramor: a dark showroom — black and green marble (SVG turbulence), hairline gold, Playfair Display + Manrope.
+import { getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Foto from '../../designs/15/Foto.astro';
+import Lightbox from '../../designs/15/Lightbox.astro';
+import Reveal from '../../designs/15/Reveal.astro';
+import { url } from '../../url';
+import '../../designs/15/style.css';
+
+const stranica = (await getEntry('stranica', 'stranica'))!.data;
+const { usluge } = (await getEntry('usluge', 'usluge'))!.data;
+const galerija = (await getEntry('galerija', 'galerija'))!.data;
+const cjenik = (await getEntry('cjenik', 'cjenik'))!.data;
+
+const tel = 'tel:' + stranica.telefon.replace(/\s/g, '');
+const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(stranica.adresa);
+const nb = (t: string) => t.replace(/ (?=(m[²¹]|cm|€)(?!\p{L}))/gu, ' ');
+const rim = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+const druga = cjenik.naslov_druga_cijena;
+---
+<Base>
+  <div class="mr">
+    <header class="top">
+      <a class="top__name" href="#vrh">{stranica.naziv}</a>
+      <nav class="top__nav" aria-label="Glavna navigacija">
+        <a href="#usluge">Usluge</a><a href="#radovi">Radovi</a><a href="#cjenik">Cjenik</a><a href="#kontakt">Kontakt</a>
+      </nav>
+      <a class="top__tel" href={tel}>{stranica.telefon}</a>
+    </header>
+
+    <main id="vrh">
+      <section class="hero marble">
+        <div class="hero__frame">
+          <svg class="orn" viewBox="0 0 64 20" aria-hidden="true"><path d="M12 2l8 8-8 8-8-8zM32 2l8 8-8 8-8-8zM52 2l8 8-8 8-8-8z" /></svg>
+          <h1 class="hero__title">{stranica.naziv}</h1>
+          <p class="hero__slogan">{stranica.slogan}</p>
+          <div class="hero__cta">
+            <a class="btn" href={tel}><span>Nazovite</span>{stranica.telefon}</a>
+            <a class="link" href={`mailto:${stranica.email}`}>{stranica.email}</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="intro wrap" data-reveal>
+        <p class="eyebrow">{rim[0]}</p>
+        <h2 class="intro__title">{stranica.uvod.naslov}</h2>
+        <p class="intro__text">{stranica.uvod.tekst}</p>
+      </section>
+
+      <section class="services wrap" id="usluge" aria-labelledby="usluge-h">
+        <header class="head" data-reveal><p class="eyebrow">{rim[1]}</p><h2 id="usluge-h">Usluge</h2></header>
+        <ol class="svc" role="list">
+          {usluge.map((u, i) => (
+            <li class="svc__item" data-reveal>
+              <span class="svc__n" aria-hidden="true">{rim[i] ?? i + 1}</span>
+              <h3>{u.naslov}</h3>
+              <div class="svc__body">
+                <p class="svc__hi">{u.istaknuto}</p>
+                <p>{u.opis}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section class="quality marble marble--green">
+        <div class="quality__in" data-reveal>
+          <svg class="orn" viewBox="0 0 64 20" aria-hidden="true"><path d="M12 2l8 8-8 8-8-8zM32 2l8 8-8 8-8-8zM52 2l8 8-8 8-8-8z" /></svg>
+          <h2>{stranica.kvaliteta.naslov}</h2>
+          <p>{stranica.kvaliteta.tekst}</p>
+        </div>
+      </section>
+
+      <section class="work wrap" id="radovi" aria-labelledby="radovi-h">
+        <header class="head" data-reveal><p class="eyebrow">{rim[2]}</p><h2 id="radovi-h">{stranica.projekti_naslov}</h2></header>
+        <ul class="gallery" role="list" data-group>
+          {galerija.slike.map((s) => (
+            <li data-reveal>
+              <Foto src={s.slika} alt={s.opis} sizes="(min-width: 64rem) 300px, (min-width: 40rem) 45vw, 88vw" />
+              <p class="cap" aria-hidden="true">{s.opis}</p>
+            </li>
+          ))}
+        </ul>
+
+        {galerija.prije_poslije.map((set) => {
+          const koraci = [
+            { label: 'Prije', src: set.prije },
+            ...(set.tijekom ? [{ label: 'U procesu', src: set.tijekom }] : []),
+            { label: 'Poslije', src: set.poslije },
+          ];
+          return (
+            <figure class="set" data-reveal>
+              <figcaption class="set__head"><h3>{set.naslov}</h3><p>{set.opis}</p></figcaption>
+              <ol class="steps" role="list" data-group>
+                {koraci.map((k) => (
+                  <li>
+                    <Foto src={k.src} alt={`${k.label} – ${set.opis}`} sizes="(min-width: 64rem) 360px, (min-width: 40rem) 30vw, 78vw" />
+                    <p class="step__label">{k.label}</p>
+                  </li>
+                ))}
+              </ol>
+            </figure>
+          );
+        })}
+      </section>
+
+      <section class="prices" id="cjenik" aria-labelledby="cjenik-h">
+        <div class="prices__card wrap" data-reveal>
+          <header class="head head--center"><p class="eyebrow">{rim[3]}</p><h2 id="cjenik-h">Cjenik<span aria-hidden="true">*</span></h2></header>
+          <table class="menu">
+            <caption class="sr">Cjenik keramičarskih usluga</caption>
+            <thead>
+              <tr><th scope="col">Usluga</th><th scope="col">Jedinica</th><th scope="col" class="price">{cjenik.naslov_cijena}</th>{druga && <th scope="col" class="price">{druga}</th>}</tr>
+            </thead>
+            <tbody>
+              {cjenik.stavke.map((s) => (
+                <tr>
+                  <th scope="row"><span>{nb(s.usluga)}</span></th>
+                  <td class="unit">{s.jedinica}</td>
+                  <td class="price" data-label={cjenik.naslov_cijena}>{nb(s.cijena)}</td>
+                  {druga && <td class="price" data-label={druga}>{nb(s.druga_cijena ?? '–')}</td>}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p class="note">*{cjenik.napomena}</p>
+          <p class="center"><a class="link" href={url('cjenik.csv')} download="cjenik-m2-keramika.csv">Preuzmite cjenik (CSV)</a></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot marble" id="kontakt">
+      <div class="foot__in" data-reveal>
+        <p class="eyebrow">Kontakt</p>
+        <p class="foot__text">{stranica.kontakt_tekst.trim()}</p>
+        <a class="foot__tel" href={tel}>{stranica.telefon}</a>
+        <a class="link" href={`mailto:${stranica.email}`}>{stranica.email}</a>
+        <svg class="orn" viewBox="0 0 64 20" aria-hidden="true"><path d="M12 2l8 8-8 8-8-8zM32 2l8 8-8 8-8-8zM52 2l8 8-8 8-8-8z" /></svg>
+        <address>{stranica.naziv} · vl. {stranica.vlasnik}<br /><a href={maps} target="_blank" rel="noopener">{stranica.adresa}</a></address>
+        <p class="copy">© {new Date().getFullYear()} {stranica.naziv}</p>
+      </div>
+    </footer>
+    <Lightbox />
+    <Reveal />
+  </div>
+</Base>

@@ -1,0 +1,157 @@
+---
+// 16 · Novine: a broadsheet front page — masthead, columns and rules, halftone photos, classifieds price list.
+import { getEntry } from 'astro:content';
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Foto from '../../designs/16/Foto.astro';
+import Lightbox from '../../designs/16/Lightbox.astro';
+import { url } from '../../url';
+import bazen from '../../assets/bazen.jpg';
+import '../../designs/16/style.css';
+
+const stranica = (await getEntry('stranica', 'stranica'))!.data;
+const { usluge } = (await getEntry('usluge', 'usluge'))!.data;
+const galerija = (await getEntry('galerija', 'galerija'))!.data;
+const cjenik = (await getEntry('cjenik', 'cjenik'))!.data;
+
+const tel = 'tel:' + stranica.telefon.replace(/\s/g, '');
+const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(stranica.adresa);
+const nb = (t: string) => t.replace(/ (?=(m[²¹]|cm|€)(?!\p{L}))/gu, ' ');
+const datum = new Intl.DateTimeFormat('hr-HR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
+const druga = cjenik.naslov_druga_cijena;
+---
+<Base>
+  <div class="np">
+    <header class="mast">
+      <a class="ear" href={tel}><span>Nazovite</span><b>{stranica.telefon}</b></a>
+      <a class="mast__title" href="#vrh">{stranica.naziv}</a>
+      <a class="ear ear--r" href={`mailto:${stranica.email}`}><span>Pišite nam</span><b>{stranica.email}</b></a>
+    </header>
+    <div class="strip">
+      <p class="strip__date">{stranica.adresa} · {datum}</p>
+      <nav class="strip__nav" aria-label="Rubrike">
+        <a href="#usluge">Usluge</a><a href="#radovi">Radovi</a><a href="#cjenik">Cjenik</a><a href="#kontakt">Kontakt</a>
+      </nav>
+      <a class="strip__tel" href={tel}>☎ {stranica.telefon}</a>
+    </div>
+
+    <main id="vrh" class="paper">
+      <section class="front">
+        <article class="lead">
+          <p class="kicker">{stranica.slogan}</p>
+          <h1 class="lead__h">{stranica.uvod.naslov}</h1>
+          <figure class="lead__fig ht">
+            <Picture src={bazen} alt="" formats={['avif', 'webp']} widths={[800, 1200, 1600]} sizes="(min-width: 64rem) 820px, 100vw" />
+          </figure>
+          <p class="byline">{stranica.naziv} · vl. {stranica.vlasnik}</p>
+          <div class="cols cols--2"><p class="dropcap">{stranica.uvod.tekst}</p></div>
+        </article>
+
+        <aside class="side">
+          <a class="callbox" href={tel}>
+            <span class="callbox__k">Nazovite odmah</span>
+            <b>{stranica.telefon}</b>
+            <span class="callbox__m">{stranica.email}</span>
+          </a>
+          <article class="side__story">
+            <h2>{stranica.kvaliteta.naslov}</h2>
+            <p>{stranica.kvaliteta.tekst}</p>
+          </article>
+          <div class="index">
+            <p class="index__h">U ovom broju</p>
+            <ol role="list">
+              <li><a href="#usluge"><span>Usluge</span><i>{usluge.length}</i></a></li>
+              <li><a href="#radovi"><span>{stranica.projekti_naslov}</span><i>{galerija.slike.length}</i></a></li>
+              <li><a href="#cjenik"><span>Cjenik</span><i>{cjenik.stavke.length}</i></a></li>
+              <li><a href="#kontakt"><span>Kontakt</span><i>☎</i></a></li>
+            </ol>
+          </div>
+        </aside>
+      </section>
+
+      <section class="sec" id="usluge" aria-labelledby="usluge-h">
+        <h2 class="sec__h" id="usluge-h">Usluge</h2>
+        <div class="stories">
+          {usluge.map((u) => (
+            <article class="story">
+              <h3>{u.naslov}</h3>
+              <p class="story__deck">{u.istaknuto}</p>
+              <p>{u.opis}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="sec" id="radovi" aria-labelledby="radovi-h">
+        <h2 class="sec__h" id="radovi-h">{stranica.projekti_naslov}</h2>
+        <ul class="photos" role="list" data-group>
+          {galerija.slike.map((s) => (
+            <li>
+              <figure>
+                <Foto src={s.slika} alt={s.opis} sizes="(min-width: 64rem) 300px, 46vw" />
+                <figcaption aria-hidden="true">{s.opis}</figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+
+        {galerija.prije_poslije.map((set) => {
+          const koraci = [
+            { label: 'Prije', src: set.prije },
+            ...(set.tijekom ? [{ label: 'U procesu', src: set.tijekom }] : []),
+            { label: 'Poslije', src: set.poslije },
+          ];
+          return (
+            <figure class="series">
+              <figcaption class="series__head"><h3>{set.naslov}</h3><p>{set.opis}</p></figcaption>
+              <ol class="series__row" role="list" data-group>
+                {koraci.map((k) => (
+                  <li><p class="series__label">{k.label}</p><Foto src={k.src} alt={`${k.label} – ${set.opis}`} sizes="(min-width: 64rem) 380px, (min-width: 36rem) 30vw, 80vw" /></li>
+                ))}
+              </ol>
+            </figure>
+          );
+        })}
+      </section>
+
+      <section class="sec" id="cjenik" aria-labelledby="cjenik-h">
+        <h2 class="sec__h" id="cjenik-h">Cjenik · mali oglasi*</h2>
+        <ul class="ads" role="list">
+          {cjenik.stavke.map((s) => (
+            <li class="ad">
+              <h3>{nb(s.usluga)}</h3>
+              <p class="ad__unit">jedinica: {s.jedinica}</p>
+              <dl>
+                <div><dt>{cjenik.naslov_cijena}</dt><dd>{nb(s.cijena)}</dd></div>
+                {druga && <div><dt>{druga}</dt><dd>{nb(s.druga_cijena ?? '–')}</dd></div>}
+              </dl>
+            </li>
+          ))}
+          <li class="ad ad--call">
+            <a href={tel}><span>Za procjenu radova nazovite</span><b>{stranica.telefon}</b></a>
+          </li>
+        </ul>
+        <p class="fine">*{cjenik.napomena} <a href={url('cjenik.csv')} download="cjenik-m2-keramika.csv">Preuzmite cjenik (CSV)</a></p>
+      </section>
+    </main>
+
+    <footer class="paper foot" id="kontakt">
+      <div class="foot__grid">
+        <div class="foot__letter">
+          <h2 class="sec__h">Kontakt</h2>
+          <p>{stranica.kontakt_tekst.trim()}</p>
+        </div>
+        <div class="foot__imp">
+          <p class="index__h">Impressum</p>
+          <p class="foot__name">{stranica.naziv}</p>
+          <p>vl. {stranica.vlasnik}</p>
+          <p><a href={maps} target="_blank" rel="noopener">{stranica.adresa}</a></p>
+          <p><a href={tel}>{stranica.telefon}</a></p>
+          <p><a href={`mailto:${stranica.email}`}>{stranica.email}</a></p>
+        </div>
+      </div>
+      <p class="foot__copy">© {new Date().getFullYear()} {stranica.naziv}</p>
+    </footer>
+    <Lightbox />
+  </div>
+</Base>
