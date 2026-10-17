@@ -5,9 +5,11 @@ import { url } from '../url';
 
 interface Props {
   napomena: string;
-  stavke: { usluga: string; jedinica: string; cijena: string }[];
+  naslov_cijena: string;
+  naslov_druga_cijena?: string;
+  stavke: { usluga: string; jedinica: string; cijena: string; druga_cijena?: string }[];
 }
-const { napomena, stavke } = Astro.props;
+const { napomena, naslov_cijena, naslov_druga_cijena, stavke } = Astro.props;
 // Keep numbers with their units on one line: "0,4 m²", "80 cm", "30 €".
 const nb = (t: string) => t.replace(/ (?=(m[²¹]|cm|€)(?!\p{L}))/gu, '\u00A0');
 ---
@@ -17,14 +19,15 @@ const nb = (t: string) => t.replace(/ (?=(m[²¹]|cm|€)(?!\p{L}))/gu, '\u00A0'
     <table>
       <caption class="visually-hidden">Cjenik keramičarskih usluga</caption>
       <thead>
-        <tr><th scope="col">Usluga</th><th scope="col">Jedinica</th><th scope="col" class="price">Cijena</th></tr>
+        <tr><th scope="col">Usluga</th><th scope="col">Jedinica</th><th scope="col" class="price">{naslov_cijena}</th>{naslov_druga_cijena && <th scope="col" class="price">{naslov_druga_cijena}</th>}</tr>
       </thead>
       <tbody>
         {stavke.map((s) => (
           <tr>
             <th scope="row">{nb(s.usluga)}</th>
             <td class="unit">{s.jedinica}</td>
-            <td class="price">{nb(s.cijena)}</td>
+            <td class="price" data-label={naslov_cijena}>{nb(s.cijena)}</td>
+            {naslov_druga_cijena && <td class="price" data-label={naslov_druga_cijena}>{nb(s.druga_cijena ?? '–')}</td>}
           </tr>
         ))}
       </tbody>
@@ -51,7 +54,7 @@ const nb = (t: string) => t.replace(/ (?=(m[²¹]|cm|€)(?!\p{L}))/gu, '\u00A0'
   .price { text-align: right; white-space: nowrap; }
   .note { margin: var(--space-4) 0 var(--space-5); font-size: var(--fs-small); color: var(--c-ink-soft); max-width: var(--measure); }
 
-  /* Phone: same table, stacked rows. Name + price on line 1, unit on line 2. */
+  /* Phone: same table, stacked rows. Name + unit on the left, the price(s) on the right, each labelled. */
   @media (max-width: 39.99rem) {
     .panel { padding: var(--space-1) var(--space-4); }
     thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -64,7 +67,12 @@ const nb = (t: string) => t.replace(/ (?=(m[²¹]|cm|€)(?!\p{L}))/gu, '\u00A0'
     tbody tr:first-child { border-top: 0; }
     th, td { padding: 0; }
     tbody th { grid-column: 1; grid-row: 1; }
-    .price { grid-column: 2; grid-row: 1; white-space: normal; max-width: 8.5rem; font-weight: 600; }
     .unit { grid-column: 1; grid-row: 2; font-size: var(--fs-small); color: var(--c-line); }
+    .price { grid-column: 2; white-space: normal; max-width: 9rem; font-weight: 600; }
+    .price::before { content: attr(data-label); display: block; font-size: 0.75rem; font-weight: 400; color: var(--c-line); }
+    .price + .price { margin-top: var(--space-2); }
+    tbody tr { grid-auto-rows: auto; }
+    tbody th, .unit { align-self: start; }
+    .price:first-of-type { grid-row: 1 / span 2; }
   }
 </style>

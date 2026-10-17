@@ -26,7 +26,7 @@ const cjenik = (await getEntry('cjenik', 'cjenik'))!.data;
       slike={galerija.slike}
       prijePoslije={galerija.prije_poslije}
     />
-    <PriceList napomena={cjenik.napomena} stavke={cjenik.stavke} />
+    <PriceList {...cjenik} />
   </main>
   <Footer
     telefon={stranica.telefon}

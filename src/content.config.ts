@@ -58,11 +58,15 @@ const cjenik = defineCollection({
   loader: iz('cjenik.yml'),
   schema: z.object({
     napomena: tekst,
+    naslov_cijena: tekst,
+    // Optional second price column (e.g. prices valid from a date). Shown only if this heading is set.
+    naslov_druga_cijena: z.string().optional(),
     stavke: z.array(
       z.object({
         usluga: tekst,
         jedinica: z.enum(['m²', 'm¹', 'sat', 'kom']),
         cijena: tekst,
+        druga_cijena: z.string().optional(),
       }),
     ),
   }),

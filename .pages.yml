@@ -125,6 +125,11 @@ content:
     format: yaml
     fields:
       - { name: napomena, label: Napomena, type: text, required: true }
+      - { name: naslov_cijena, label: Naslov stupca cijene, type: string, required: true, description: "Npr. Cijena" }
+      - name: naslov_druga_cijena
+        label: Naslov drugog stupca cijene
+        type: string
+        description: "Npr. Cijena (od 10.09.2026.). Ostavite prazno ako drugi stupac nije potreban."
       - name: stavke
         label: Stavke cjenika
         type: object
@@ -146,3 +151,7 @@ content:
             type: string
             required: true
             description: Npr. 30 € ili ⅓ cijene postave po m²
+          - name: druga_cijena
+            label: Druga cijena
+            type: string
+            description: Cijena za drugi stupac (ako postoji).
