@@ -1,0 +1,20 @@
+---
+import Ornament from './Ornament.astro';
+
+interface Props {
+  naslov: string;
+  tekst: string;
+}
+const { naslov, tekst } = Astro.props;
+---
+<section class="section wrap center intro">
+  <Ornament />
+  <h2>{naslov}</h2>
+  <p class="measure">{tekst}</p>
+</section>
+
+<style>
+  .intro { padding-bottom: 0; }
+  h2 { max-width: 24ch; margin-inline: auto; }
+  p { margin-top: var(--space-5); font-size: var(--fs-lead); color: var(--c-ink); }
+</style>

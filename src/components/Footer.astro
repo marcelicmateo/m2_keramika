@@ -1,0 +1,50 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  telefon: string;
+  email: string;
+  vlasnik: string;
+  adresa: string;
+  kontaktTekst: string;
+}
+const { telefon, email, vlasnik, adresa, kontaktTekst } = Astro.props;
+const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(adresa);
+---
+<footer class="footer section">
+  <div class="wrap center">
+    <div class="pill">
+      <Image src={logo} alt="M² Keramika" widths={[180, 360]} sizes="180px" />
+    </div>
+    <p class="text">{kontaktTekst.trim()}</p>
+    <div class="actions">
+      <Button href={`tel:${telefon.replace(/\s/g, '')}`} variant="on-dark"><Icon slot="icon" name="phone" />{telefon}</Button>
+      <Button href={`mailto:${email}`} variant="on-dark"><Icon slot="icon" name="mail" />{email}</Button>
+    </div>
+    <address>
+      M² Keramika, vl. {vlasnik}<br />
+      <a href={maps} target="_blank" rel="noopener">{adresa}</a>
+    </address>
+    <p class="copy">© {new Date().getFullYear()} M² Keramika</p>
+  </div>
+</footer>
+
+<style>
+  .footer { background: var(--c-ink); color: var(--c-on-dark); }
+  .pill {
+    display: inline-block;
+    background: var(--c-stone);
+    border-radius: 999px;
+    padding: var(--space-3) var(--space-6);
+  }
+  .pill img { width: 180px; }
+  .text { white-space: pre-line; margin: var(--space-6) auto 0; max-width: var(--measure); }
+  .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-6); }
+  address { font-style: normal; margin-top: var(--space-6); line-height: 2; }
+  address a { display: inline-block; min-height: 44px; line-height: 44px; text-underline-offset: 3px; }
+  address a:hover { color: var(--c-sand); }
+  .copy { margin-top: var(--space-5); font-size: var(--fs-small); color: var(--c-line); }
+</style>

@@ -1,0 +1,131 @@
+/* Fonts: self-hosted. The CSS lists every subset, but thanks to unicode-range the
+   browser fetches only latin + latin-ext (č ć đ š ž) for this page. */
+@import '@fontsource-variable/inter';
+@import '@fontsource/cardo/400.css';
+
+/* ---------- Tokens (docs/04) ---------- */
+:root {
+  --c-bg: #ffffff;
+  --c-bg-soft: #f9f9f9;
+  --c-ink: #111111;
+  --c-ink-soft: #636363;
+  --c-line: #a4a4a4;
+  --c-stone: #cfcabe;
+  --c-sand: #c2a990;
+  --c-on-dark: #ffffff;
+  --overlay: linear-gradient(rgb(17 17 17 / 0.15), rgb(17 17 17 / 0.55));
+  --overlay-strong: linear-gradient(rgb(17 17 17 / 0.35), rgb(17 17 17 / 0.7));
+
+  --f-heading: 'Cardo', Georgia, serif;
+  --f-body: 'Inter Variable', system-ui, sans-serif;
+  --fs-hero: clamp(2.5rem, 1.6rem + 4.5vw, 4.75rem);
+  --fs-h2: clamp(1.875rem, 1.4rem + 2.2vw, 2.75rem);
+  --fs-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+  --fs-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --fs-body: 1.0625rem;
+  --fs-small: 0.875rem;
+  --lh-body: 1.6;
+  --lh-heading: 1.15;
+  --measure: 62ch;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --section-y: clamp(3.5rem, 2rem + 6vw, 7.5rem);
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --wrap: 72rem;
+  --radius: 0.5rem;
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+img, picture, svg { display: block; max-width: 100%; }
+img { height: auto; }
+input, button, textarea, select { font: inherit; }
+table { border-collapse: collapse; }
+
+/* ---------- Base typography ---------- */
+body {
+  background: var(--c-bg);
+  color: var(--c-ink);
+  font-family: var(--f-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  overflow-wrap: break-word;
+}
+h1, h2 {
+  font-family: var(--f-heading);
+  font-weight: 400;
+  line-height: var(--lh-heading);
+  text-wrap: balance;
+}
+h2 { font-size: var(--fs-h2); }
+h3 {
+  font-family: var(--f-body);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  line-height: 1.3;
+}
+p { text-wrap: pretty; }
+a { color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--c-sand);
+  outline-offset: 2px;
+}
+
+/* ---------- Layout helpers ---------- */
+.wrap {
+  width: 100%;
+  max-width: calc(var(--wrap) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.section { padding-block: var(--section-y); }
+.center { text-align: center; }
+.center .ornament { margin-inline: auto; }
+.measure { max-width: var(--measure); margin-inline: auto; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Photo behind a section: an absolutely positioned <img> plus an overlay. */
+.bg { position: relative; isolation: isolate; }
+.bg > .bg-img,
+.bg > picture > .bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+.bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--overlay);
+  z-index: -1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

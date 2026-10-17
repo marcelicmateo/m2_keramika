@@ -1,0 +1,37 @@
+---
+import { getEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
+import '../styles/global.css';
+import hero from '../assets/hero.jpg';
+import { url } from '../url';
+
+interface Props {
+  title?: string;
+}
+const naslov = 'M² Keramika – keramičar Zadar | postavljanje pločica i hidroizolacija';
+const { title = naslov } = Astro.props;
+const stranica = (await getEntry('stranica', 'stranica'))!.data;
+const og = await getImage({ src: hero, width: 1200, format: 'jpg' });
+const ogUrl = new URL(og.src, Astro.site).href;
+const noindex = Boolean(process.env.DEV_SITE);
+---
+<!doctype html>
+<html lang="hr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={stranica.seo_opis} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="hr_HR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={stranica.seo_opis} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site).href} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

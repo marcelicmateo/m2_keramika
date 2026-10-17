@@ -1,0 +1,36 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  variant?: 'ink' | 'on-dark';
+}
+const { href, variant = 'ink', class: cls, ...rest } = Astro.props;
+---
+<a href={href} class:list={['btn', `btn--${variant}`, cls]} {...rest}>
+  <slot name="icon" />
+  <span><slot /></span>
+</a>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    min-height: 44px;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius);
+    font-family: var(--f-body);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn :global(svg) { width: 1.1em; height: 1.1em; flex: none; }
+  .btn--ink { background: var(--c-ink); color: var(--c-on-dark); }
+  .btn--ink:hover, .btn--ink:focus-visible { background: #2a2a2a; }
+  .btn--on-dark { background: var(--c-on-dark); color: var(--c-ink); }
+  .btn--on-dark:hover, .btn--on-dark:focus-visible { background: var(--c-stone); }
+</style>

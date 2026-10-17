@@ -1,0 +1,53 @@
+---
+import { Image } from 'astro:assets';
+import hero from '../assets/hero.jpg';
+
+interface Props {
+  slogan: string;
+}
+const { slogan } = Astro.props;
+---
+<section class="hero bg">
+  <Image
+    class="bg-img"
+    src={hero}
+    alt=""
+    widths={[480, 800, 1200, 1600, 2299]}
+    sizes="100vw"
+    quality={70}
+    loading="eager"
+    fetchpriority="high"
+  />
+  <div class="wrap hero__text">
+    <h1>M<sup>2</sup>KERAMIKA</h1>
+    <p>{slogan}</p>
+  </div>
+</section>
+
+<style>
+  .hero {
+    display: flex;
+    align-items: flex-end;
+    min-height: 60svh;
+    color: var(--c-on-dark);
+  }
+  .hero .bg-img { object-position: 32% 44%; }
+  .hero::before { background: linear-gradient(rgb(17 17 17 / 0.1) 30%, rgb(17 17 17 / 0.65)); }
+  .hero__text { padding-bottom: clamp(2rem, 1rem + 5vw, 4.5rem); }
+  h1 {
+    font-size: var(--fs-hero);
+    letter-spacing: 0.01em;
+    text-shadow: 0 1px 12px rgb(0 0 0 / 0.35);
+  }
+  sup { font-size: 0.5em; line-height: 0; vertical-align: 0.9em; }
+  p {
+    font-size: var(--fs-lead);
+    margin-top: var(--space-2);
+    max-width: 32ch;
+    text-shadow: 0 1px 8px rgb(0 0 0 / 0.4);
+  }
+  @media (min-width: 40rem) {
+    .hero { min-height: min(70svh, 40rem); }
+    p { max-width: none; }
+  }
+</style>

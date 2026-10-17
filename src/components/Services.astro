@@ -1,0 +1,34 @@
+---
+import Ornament from './Ornament.astro';
+
+interface Props {
+  usluge: { naslov: string; istaknuto: string; opis: string }[];
+}
+const { usluge } = Astro.props;
+---
+<section class="section wrap" aria-label="Usluge">
+  <ul class="services" role="list">
+    {usluge.map((u) => (
+      <li>
+        <Ornament />
+        <h3>{u.naslov}</h3>
+        <p><strong>{u.istaknuto}</strong> {u.opis}</p>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .services {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-7);
+  }
+  h3 { margin-bottom: var(--space-3); }
+  p { max-width: var(--measure); }
+  strong { font-weight: 600; }
+  @media (min-width: 60rem) {
+    .services { grid-template-columns: 1fr 1fr; column-gap: var(--space-8); }
+  }
+</style>

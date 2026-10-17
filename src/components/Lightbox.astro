@@ -1,0 +1,66 @@
+<dialog id="lightbox" class="lightbox" aria-label="Uvećana fotografija">
+  <img alt="" />
+  <p class="lightbox__cap"></p>
+  <form method="dialog"><button class="lightbox__close" aria-label="Zatvori">✕</button></form>
+</dialog>
+
+<script>
+  const dlg = document.getElementById('lightbox') as HTMLDialogElement;
+  const img = dlg.querySelector('img')!;
+  const cap = dlg.querySelector('p')!;
+  document.addEventListener('click', (e) => {
+    const a = (e.target as Element).closest<HTMLAnchorElement>('a[data-lightbox]');
+    if (!a) return;
+    e.preventDefault();
+    img.src = a.href;
+    img.alt = cap.textContent = a.querySelector('img')?.alt ?? '';
+    dlg.showModal();
+  });
+  // Click on the dark area around the photo closes; Esc and the button close natively.
+  dlg.addEventListener('click', (e) => {
+    if (e.target === dlg) dlg.close();
+  });
+</script>
+
+<style>
+  .lightbox {
+    max-width: none;
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: var(--space-6) var(--space-4) var(--space-4);
+    border: 0;
+    background: rgb(17 17 17 / 0.95);
+    color: var(--c-on-dark);
+  }
+  .lightbox[open] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+  .lightbox::backdrop { background: rgb(17 17 17 / 0.6); }
+  .lightbox img {
+    max-width: 100%;
+    max-height: 85svh;
+    width: auto;
+    object-fit: contain;
+    border-radius: var(--radius);
+  }
+  .lightbox__cap { font-size: var(--fs-small); text-align: center; max-width: var(--measure); }
+  .lightbox__close {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--c-on-dark);
+    color: var(--c-ink);
+    font-size: 1.25rem;
+    cursor: pointer;
+  }
+</style>
