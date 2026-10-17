@@ -1,8 +1,8 @@
-name: Dev site (GitHub Pages)
+name: Dev site with alternative designs (GitHub Pages)
 
 on:
   push:
-    branches: [main]
+    branches: [dev_alternative]
   workflow_dispatch:
 
 permissions:
