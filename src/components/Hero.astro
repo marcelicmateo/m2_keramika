@@ -29,10 +29,14 @@ const { slogan } = Astro.props;
     display: flex;
     align-items: flex-end;
     min-height: 60svh;
+    padding-top: 8rem; /* room for the header laid over the photo */
     color: var(--c-on-dark);
   }
   .hero .bg-img { object-position: 32% 44%; }
-  .hero::before { background: linear-gradient(rgb(17 17 17 / 0.1) 30%, rgb(17 17 17 / 0.65)); }
+  /* Light shade at the top behind the header, clear middle, dark bottom behind the title. */
+  .hero::before {
+    background: linear-gradient(rgb(17 17 17 / 0.3), rgb(17 17 17 / 0.05) 30%, rgb(17 17 17 / 0.1) 50%, rgb(17 17 17 / 0.65));
+  }
   .hero__text { padding-bottom: clamp(2rem, 1rem + 5vw, 4.5rem); }
   h1 {
     font-size: var(--fs-hero);
@@ -47,7 +51,7 @@ const { slogan } = Astro.props;
     text-shadow: 0 1px 8px rgb(0 0 0 / 0.4);
   }
   @media (min-width: 40rem) {
-    .hero { min-height: min(70svh, 40rem); }
+    .hero { min-height: min(80svh, 46rem); }
     p { max-width: none; }
   }
 </style>

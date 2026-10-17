@@ -1,7 +1,6 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '../assets/logo.png';
-import nebo from '../assets/pozadina-projekti.jpg';
 import Button from './Button.astro';
 import Icon from './Icon.astro';
 import { url } from '../url';
@@ -13,8 +12,7 @@ interface Props {
 const { telefon, email } = Astro.props;
 const tel = `tel:${telefon.replace(/\s/g, '')}`;
 ---
-<header class="header bg">
-  <Image class="bg-img" src={nebo} alt="" widths={[640, 1280, 1920]} sizes="100vw" quality={60} loading="eager" />
+<header class="header">
   <div class="wrap header__in">
     <a href={url()} class="header__logo">
       <Image src={logo} alt="M² Keramika" widths={[120, 160, 240, 320]} sizes="(min-width: 40rem) 160px, 120px" loading="eager" />
@@ -27,8 +25,8 @@ const tel = `tel:${telefon.replace(/\s/g, '')}`;
 </header>
 
 <style>
-  .header::before { background: none; }
-  .header .bg-img { object-position: 50% 0%; }
+  /* Sits on top of the hero photo, so the page starts with one continuous image. */
+  .header { position: absolute; inset: 0 0 auto; z-index: 10; }
   .header__in {
     display: flex;
     align-items: center;
