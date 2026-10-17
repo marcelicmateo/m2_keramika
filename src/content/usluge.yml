@@ -1,0 +1,14 @@
+usluge:
+  - naslov: "Postavljanje keramike"
+    istaknuto: "Besprijekorno polaganje svih vrsta i formata pločica."
+    opis: "Nudimo usluge oblaganja unutarnjih i vanjskih prostora — od kupaonica, kuhinja i hodnika do terasa i bazena. Specijalizirani smo za rad sa svim materijalima i formatima pločica. Posebnu pažnju posvećujemo preciznosti spojeva, ravnomjernom padu i pedantnom fugiranju i silikoniranju za dugotrajan i estetski savršen izgled."
+  - naslov: "Pripremni radovi"
+    istaknuto: "Sveobuhvatna priprema podloge za dugotrajnost."
+    opis: "Kvalitetno postavljena keramika ovisi o podlozi na koju se stavlja. Obavljamo sve pripremne radove: rušenje stare keramike i sanitarija, sanaciju neravnina te precizno niveliranje podova i zidova. Pravilno pripremljena podloga jamči idealno ravne površine i stabilnost novih pločica."
+  - naslov: "Hidroizolacija"
+    istaknuto: "Sigurna zaštita od vlage i prodora vode."
+    # TODO Marin: koje materijale koristi?
+    opis: "Vlaga je najveći neprijatelj svake građevine. Izvodimo stručnu i temeljitu hidroizolaciju kupaonica, tuš kabina, terasa i balkona koristeći provjerene hidroizolacijske sustave. Pravilno izvedenom hidroizolacijom osiguravamo potpunu zaštitu vašeg objekta od curenja i nastanka plijesni."
+  - naslov: "Postavljanje prozorskih klupčica"
+    istaknuto: "Precizna ugradnja i završna estetika."
+    opis: "Uz keramičarske radove, nudimo i uslugu precizne ugradnje unutarnjih i vanjskih prozorskih klupčica (od kamena, mramora, granita ili drugih materijala). Vodimo računa o pravilnom padu za otjecanje vode i besprijekornom spajanju s fasadom ili unutarnjim zidom."

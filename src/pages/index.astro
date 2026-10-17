@@ -1,12 +1,23 @@
 ---
+// PRIVREMENO (faza 2): dokaz da se sadržaj učitava. Faza 3 zamjenjuje ovu stranicu.
+import { getEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+
+const stranica = (await getEntry('stranica', 'stranica'))!.data;
+const usluge = (await getEntry('usluge', 'usluge'))!.data;
+const galerija = (await getEntry('galerija', 'galerija'))!.data;
+const cjenik = (await getEntry('cjenik', 'cjenik'))!.data;
+const prva = galerija.slike[0]!;
 ---
 <html lang="hr">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>M2 Keramika</title>
+    <title>{stranica.naziv}</title>
   </head>
   <body>
-    <h1>M2 Keramika</h1>
+    <h1>{stranica.naziv}</h1>
+    <Image src={prva.slika} alt={prva.opis} width={400} />
+    <pre>{JSON.stringify({ stranica, usluge, galerija, cjenik }, null, 2)}</pre>
   </body>
 </html>
