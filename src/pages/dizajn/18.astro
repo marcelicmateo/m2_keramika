@@ -1,0 +1,160 @@
+---
+// 18 · Teraco — modern terrazzo: speckled stone made in SVG, soft pastels, rounded friendly shapes.
+import { getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Pic from '../../designs/18/Pic.astro';
+import Lightbox from '../../designs/18/Lightbox.astro';
+import { terrazzo } from '../../designs/18/terrazzo';
+import bazen from '../../assets/bazen.jpg';
+import { url } from '../../url';
+import '../../designs/18/style.css';
+
+const s = (await getEntry('stranica', 'stranica'))!.data;
+const { usluge } = (await getEntry('usluge', 'usluge'))!.data;
+const galerija = (await getEntry('galerija', 'galerija'))!.data;
+const cjenik = (await getEntry('cjenik', 'cjenik'))!.data;
+const set0 = galerija.prije_poslije[0];
+const hero = set0 ? { src: set0.poslije, alt: `Poslije – ${set0.opis}` } : { src: bazen, alt: s.slogan };
+const tel = `tel:${s.telefon.replace(/\s/g, '')}`;
+const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s.adresa);
+const nb = (t: string) => t.replace(/ (?=(m[²¹]|cm|€)(?!\p{L}))/gu, ' ');
+const druga = cjenik.naslov_druga_cijena;
+
+const tz = [
+  `--tz: ${terrazzo({ seed: 7, bg: '#efe7dc', colors: ['#e7a993', '#d9826a', '#a9c3a4', '#f0d27e', '#9fb9d4', '#cfc5b8', '#5d5a66'], count: 190, min: 1.2, max: 12 })}`,
+  `--tz-big: ${terrazzo({ seed: 21, bg: '#f2c6b8', colors: ['#fff6ef', '#d9826a', '#a9c3a4', '#f0d27e', '#5d5a66', '#e9b0a0'], count: 130, min: 2, max: 20, size: 420 })}`,
+  `--tz-dark: ${terrazzo({ seed: 3, bg: '#2a2731', colors: ['#f2c6b8', '#a9c3a4', '#f0d27e', '#9fb9d4', '#6c6878', '#fff6ef'], count: 220, min: 1.2, max: 12 })}`,
+].join(';');
+---
+<Base>
+  <div class="tz" style={tz}>
+    <header class="top">
+      <a class="brand" href={url()}>{s.naziv}</a>
+      <nav class="top__nav" aria-label="Sadržaj">
+        <a href="#usluge">Usluge</a><a href="#radovi">Radovi</a><a href="#cjenik">Cjenik</a><a href="#kontakt">Kontakt</a>
+      </nav>
+      <a class="btn btn--small" href={tel}><Icon name="phone" /><span>Nazovite</span></a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero__card">
+          <p class="kicker"><span class="dot" aria-hidden="true"></span>{s.naziv}</p>
+          <h1>{s.slogan}</h1>
+          <div class="actions">
+            <a class="btn" href={tel}><Icon name="phone" /><span>{s.telefon}</span></a>
+            <a class="btn btn--soft" href={`mailto:${s.email}`}><Icon name="mail" /><span>{s.email}</span></a>
+          </div>
+        </div>
+        <div class="hero__photo" data-group>
+          <Pic src={hero.src} alt={hero.alt} sizes="(min-width: 60rem) 440px, 70vw" eager />
+        </div>
+        <span class="pebble pebble--a" aria-hidden="true"></span>
+        <span class="pebble pebble--b" aria-hidden="true"></span>
+      </section>
+
+      <section class="uvod wrap">
+        <h2>{s.uvod.naslov}</h2>
+        <p class="lead">{s.uvod.tekst}</p>
+      </section>
+
+      <section class="usluge wrap" id="usluge" aria-labelledby="usluge-h">
+        <h2 id="usluge-h" class="eyebrow">Usluge</h2>
+        <ul class="cards" role="list">
+          {usluge.map((u, i) => (
+            <li class={`card card--${i % 4}`}>
+              <span class="card__chip" aria-hidden="true">{i + 1}</span>
+              <h3>{u.naslov}</h3>
+              <p class="card__hi">{u.istaknuto}</p>
+              <p>{u.opis}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="kvaliteta wrap">
+        <div class="kvaliteta__in">
+          <div class="kvaliteta__core">
+            <h2>{s.kvaliteta.naslov}</h2>
+            <p class="lead">{s.kvaliteta.tekst}</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="radovi wrap" id="radovi" aria-labelledby="radovi-h">
+        <h2 id="radovi-h">{s.projekti_naslov}</h2>
+        <ul class="gallery" role="list" data-group>
+          {galerija.slike.map((g) => (
+            <li><Pic class="shot" src={g.slika} alt={g.opis} sizes="(min-width: 64rem) 300px, (min-width: 40rem) 45vw, 45vw" /></li>
+          ))}
+        </ul>
+
+        {galerija.prije_poslije.map((set) => {
+          const koraci = [
+            { label: 'Prije', src: set.prije },
+            ...(set.tijekom ? [{ label: 'U procesu', src: set.tijekom }] : []),
+            { label: 'Poslije', src: set.poslije },
+          ];
+          return (
+            <figure class="set" data-group>
+              <figcaption>
+                <h3>{set.naslov}</h3>
+                <p>{set.opis}</p>
+              </figcaption>
+              <ol class="steps" role="list">
+                {koraci.map((k, i) => (
+                  <li class="step">
+                    <p class="step__label"><span aria-hidden="true">{i + 1}</span>{k.label}</p>
+                    <Pic class="shot" src={k.src} alt={`${k.label} – ${set.opis}`} sizes="(min-width: 64rem) 340px, (min-width: 40rem) 30vw, 70vw" />
+                  </li>
+                ))}
+              </ol>
+            </figure>
+          );
+        })}
+      </section>
+
+      <section class="cjenik wrap" id="cjenik" aria-labelledby="cjenik-h">
+        <h2 id="cjenik-h">Cjenik<sup>*</sup></h2>
+        <div class="sheet">
+          <table>
+            <caption class="sr">Cjenik keramičarskih usluga</caption>
+            <thead>
+              <tr><th scope="col">Usluga</th><th scope="col">Jedinica</th><th scope="col" class="price">{cjenik.naslov_cijena}</th>{druga && <th scope="col" class="price">{druga}</th>}</tr>
+            </thead>
+            <tbody>
+              {cjenik.stavke.map((r) => (
+                <tr>
+                  <th scope="row">{nb(r.usluga)}</th>
+                  <td class="unit">{r.jedinica}</td>
+                  <td class="price" data-label={cjenik.naslov_cijena}>{nb(r.cijena)}</td>
+                  {druga && <td class="price" data-label={druga}>{nb(r.druga_cijena ?? '–')}</td>}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="note">*{cjenik.napomena}</p>
+        <a class="btn btn--soft" href={url('cjenik.csv')} download="cjenik-m2-keramika.csv"><Icon name="download" /><span>Preuzmite cjenik (CSV)</span></a>
+      </section>
+    </main>
+
+    <footer class="foot" id="kontakt">
+      <div class="foot__card">
+        <h2>Kontakt</h2>
+        <p class="foot__text">{s.kontakt_tekst.trim()}</p>
+        <div class="actions">
+          <a class="btn" href={tel}><Icon name="phone" /><span>{s.telefon}</span></a>
+          <a class="btn btn--soft" href={`mailto:${s.email}`}><Icon name="mail" /><span>{s.email}</span></a>
+        </div>
+        <address>
+          {s.naziv}, vl. {s.vlasnik}<br />
+          <a href={maps} target="_blank" rel="noopener">{s.adresa}</a>
+        </address>
+      </div>
+      <p class="copy">© {new Date().getFullYear()} {s.naziv}</p>
+    </footer>
+    <Lightbox />
+  </div>
+</Base>
