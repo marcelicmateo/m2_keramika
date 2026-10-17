@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import hero from '../assets/hero.jpg';
+import hero from '../assets/bazen.jpg';
 
 interface Props {
   slogan: string;
@@ -33,9 +33,9 @@ const { slogan } = Astro.props;
     color: var(--c-on-dark);
   }
   .hero .bg-img { object-position: 32% 44%; }
-  /* Light shade at the top behind the header, clear middle, dark bottom behind the title. */
+  /* No shade behind the header (its buttons are solid), dark only at the bottom behind the title. */
   .hero::before {
-    background: linear-gradient(rgb(17 17 17 / 0.3), rgb(17 17 17 / 0.05) 30%, rgb(17 17 17 / 0.1) 50%, rgb(17 17 17 / 0.65));
+    background: linear-gradient(transparent 40%, rgb(17 17 17 / 0.7));
   }
   .hero__text { padding-bottom: clamp(2rem, 1rem + 5vw, 4.5rem); }
   h1 {
