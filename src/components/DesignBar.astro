@@ -1,0 +1,72 @@
+---
+// Temporary bar for comparing the alternative designs (src/designs.ts). No JS: a <details> dropdown plus prev/next links.
+import { designs, designPath } from '../designs';
+import { url } from '../url';
+
+const path = Astro.url.pathname.replace(/\/?$/, '/');
+const i = Math.max(0, designs.findIndex((d) => path.endsWith('/' + designPath(d.slug)) && (d.slug !== '00' || path === url())));
+const cur = designs[i];
+const prev = designs[(i - 1 + designs.length) % designs.length];
+const next = designs[(i + 1) % designs.length];
+const label = (d: (typeof designs)[number]) => `${d.slug} · ${d.naziv}`;
+---
+<div class="dbar">
+  <details class="dbar__menu">
+    <summary>Dizajn: <b>{label(cur)}</b> <span aria-hidden="true">▾</span></summary>
+    <ul role="list">
+      {designs.map((d) => (
+        <li><a href={url(designPath(d.slug))} aria-current={d === cur ? 'page' : undefined}>{label(d)}</a></li>
+      ))}
+    </ul>
+  </details>
+  <nav class="dbar__nav" aria-label="Dizajni">
+    <a href={url(designPath(prev.slug))} aria-label={`Prethodni: ${label(prev)}`}>‹</a>
+    <span>{i} / {designs.length - 1}</span>
+    <a href={url(designPath(next.slug))} aria-label={`Sljedeći: ${label(next)}`}>›</a>
+  </nav>
+</div>
+
+<style>
+  .dbar {
+    position: relative;
+    z-index: 2147483000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 40px;
+    padding: 0 12px;
+    background: #111;
+    color: #fff;
+    font: 500 14px/1.2 system-ui, sans-serif;
+    letter-spacing: normal;
+    text-transform: none;
+    text-align: left;
+  }
+  .dbar a { color: #fff; text-decoration: none; }
+  .dbar :focus-visible { outline: 2px solid #ffd54a; outline-offset: 2px; }
+  .dbar__menu { position: relative; min-width: 0; }
+  .dbar__menu summary { cursor: pointer; padding: 10px 0; list-style: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dbar__menu summary::-webkit-details-marker { display: none; }
+  .dbar__menu ul {
+    position: absolute;
+    top: 100%;
+    left: -12px;
+    margin: 0;
+    padding: 6px 0;
+    list-style: none;
+    width: max-content;
+    max-width: calc(100vw - 24px);
+    max-height: 70vh;
+    overflow-y: auto;
+    background: #111;
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.5);
+  }
+  .dbar__menu li a { display: block; padding: 8px 16px; }
+  .dbar__menu li a:hover { background: #333; }
+  .dbar__menu li a[aria-current] { color: #ffd54a; font-weight: 700; }
+  .dbar__nav { display: flex; align-items: center; gap: 4px; flex: none; }
+  .dbar__nav a { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 6px; font-size: 22px; }
+  .dbar__nav a:hover { background: #333; }
+  .dbar__nav span { font-variant-numeric: tabular-nums; color: #bbb; }
+</style>

@@ -1,9 +1,9 @@
 ---
 import { getEntry } from 'astro:content';
 import { getImage } from 'astro:assets';
-import '../styles/global.css';
 import hero from '../assets/bazen.jpg';
 import { url } from '../url';
+import DesignBar from '../components/DesignBar.astro';
 
 interface Props {
   title?: string;
@@ -32,6 +32,14 @@ const noindex = Boolean(process.env.DEV_SITE);
     <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site).href} />
   </head>
   <body>
-    <slot />
+    <DesignBar />
+    <div class="page">
+      <slot />
+    </div>
   </body>
 </html>
+
+<style>
+  /* The baseline header is absolutely positioned; this keeps it below the design bar. */
+  .page { position: relative; }
+</style>
