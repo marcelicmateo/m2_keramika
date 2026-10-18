@@ -1,17 +1,24 @@
-naziv: "M² Keramika"
-slogan: "Obrt specijaliziran za keramičarske usluge"
-telefon: "+385 95 512 7986"
-email: "info@m2-keramika.hr"
-vlasnik: "Marin Mašina"
-adresa: "Ulica J. Miše, Zadar"
-seo_opis: "Keramičarski obrt iz Zadra: postavljanje pločica, pripremni radovi, hidroizolacija i ugradnja prozorskih klupčica. Pogledajte radove i cjenik."
+naziv: M² Keramika
+slogan: Obrt specijaliziran za keramičarske usluge
+telefon: +385 95 512 7986
+email: info@m2-keramika.hr
+vlasnik: Marin Mašina
+adresa: Ulica J. Miše, Zadar
+seo_opis: "Keramičarski obrt iz Zadra: postavljanje pločica, pripremni radovi,
+  hidroizolacija i ugradnja prozorskih klupčica."
 uvod:
-  naslov: "Vaša vizija ljepšeg doma ostvarena uz naše usluge"
-  tekst: "Nudimo kompletne usluge oblaganja unutarnjih i vanjskih prostora svim vrstama i formatima keramičkih pločica. Uz samu montažu, preuzimamo i sve pripremne radove — od rušenja stare keramike i niveliranja podova, do precizne hidroizolacije i ugradnje prozorskih klupčica. Jamčimo maksimalnu preciznost, urednost i poštivanje rokova."
+  naslov: Vaša vizija ljepšeg doma ostvarena uz naše usluge
+  tekst: Nudimo kompletne usluge oblaganja unutarnjih i vanjskih prostora svim
+    vrstama i formatima keramičkih pločica. Uz samu montažu, preuzimamo i sve
+    pripremne radove — od rušenja stare keramike i niveliranja podova, do
+    precizne hidroizolacije i ugradnje prozorskih klupčica. Jamčimo maksimalnu
+    preciznost, urednost i poštivanje rokova.
 kvaliteta:
-  naslov: "Naša posvećenost kvaliteti"
-  tekst: "Stvaramo dugotrajna i estetski savršena rješenja za vaš dom ili poslovni prostor. Svakom projektu pristupamo profesionalno uz poštivanje rokova i pedantnost u svakom detalju."
-projekti_naslov: "Neki od projekata"
+  naslov: Naša posvećenost kvaliteti
+  tekst: Stvaramo dugotrajna i estetski savršena rješenja za vaš dom ili poslovni
+    prostor. Svakom projektu pristupamo profesionalno uz poštivanje rokova i
+    pedantnost u svakom detalju.
+projekti_naslov: Neki od projekata
 kontakt_tekst: |
   Kontaktirajte nas za početak uspješne suradnje.
   Tu smo da vam pomognemo odabrati najbolja rješenja za vaš prostor.
