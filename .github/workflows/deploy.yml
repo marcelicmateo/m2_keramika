@@ -33,6 +33,9 @@ jobs:
       # Uploads only changed files and deletes only files it uploaded before (tracked in
       # httpdocs/.ftp-deploy-sync-state.json), so .well-known/ and anything else is left alone.
       - uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        env:
+          # kuhada runs ProFTPD, which resets FTPS data connections under TLS 1.3 (session reuse).
+          NODE_OPTIONS: --tls-max-v1.2
         with:
           server: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
