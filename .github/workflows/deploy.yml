@@ -1,0 +1,43 @@
+name: Deploy to m2-keramika.hr
+
+# Manual only: Actions → "Deploy to m2-keramika.hr" → Run workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Dry run (log in and compare, upload nothing)
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency: deploy-production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: actions/cache@v6
+        with:
+          path: node_modules/.astro
+          key: astro-${{ hashFiles('src/assets/**') }}
+          restore-keys: astro-
+      - run: npm run build # BASE defaults to /
+      # Uploads only changed files and deletes only files it uploaded before (tracked in
+      # httpdocs/.ftp-deploy-sync-state.json), so .well-known/ and anything else is left alone.
+      - uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          password: ${{ secrets.DEPLOY_PASSWORD }}
+          protocol: ftps
+          local-dir: dist/
+          server-dir: httpdocs/
+          dry-run: ${{ inputs.dry_run }}
