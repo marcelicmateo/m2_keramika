@@ -13,6 +13,11 @@ RewriteRule ^ https://m2-keramika.hr%{REQUEST_URI} [L,R=301]
 # Old WordPress link to the price list.
 RewriteRule ^wp-content/uploads/2026/09/Obrt_JerolimaMise8_1_20092026_0730-List-1\.csv$ /cjenik.csv [L,R=301]
 
+# Compress text files (HTML, CSS, JS, SVG, XML, CSV).
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript image/svg+xml text/xml application/xml text/csv text/plain
+</IfModule>
+
 <IfModule mod_headers.c>
   # Pages always revalidate, so edits show at once; Astro's hashed files never change.
   <FilesMatch "\.html$">

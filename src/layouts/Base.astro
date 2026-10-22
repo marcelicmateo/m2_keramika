@@ -3,6 +3,7 @@ import { getEntry } from 'astro:content';
 import { getImage } from 'astro:assets';
 import '../styles/global.css';
 import hero from '../assets/bazen.jpg';
+import logo from '../assets/logo.png';
 import { url } from '../url';
 
 interface Props {
@@ -14,6 +15,7 @@ const { title = naslov } = Astro.props;
 const stranica = (await getEntry('stranica', 'stranica'))!.data;
 const og = await getImage({ src: hero, width: 1200, format: 'jpg' });
 const ogUrl = new URL(og.src, Astro.site).href;
+const logoImg = await getImage({ src: logo, width: 400, format: 'png' });
 const noindex = Astro.props.noindex || Boolean(process.env.DEV_SITE);
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
 // Business card for Google (name, phone, address in search results and Maps).
@@ -24,9 +26,16 @@ const business = {
   description: stranica.seo_opis,
   url: pageUrl,
   image: ogUrl,
+  logo: new URL(logoImg.src, Astro.site).href,
   telephone: stranica.telefon,
   email: stranica.email,
-  address: { '@type': 'PostalAddress', streetAddress: stranica.adresa, addressLocality: 'Zadar', addressCountry: 'HR' },
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: stranica.adresa.replace(/,\s*Zadar$/, ''),
+    postalCode: '23000',
+    addressLocality: 'Zadar',
+    addressCountry: 'HR',
+  },
   areaServed: 'Zadar',
 };
 ---
