@@ -7,13 +7,28 @@ import { url } from '../url';
 
 interface Props {
   title?: string;
+  noindex?: boolean;
 }
 const naslov = 'M² Keramika – keramičar Zadar | postavljanje pločica i hidroizolacija';
 const { title = naslov } = Astro.props;
 const stranica = (await getEntry('stranica', 'stranica'))!.data;
 const og = await getImage({ src: hero, width: 1200, format: 'jpg' });
 const ogUrl = new URL(og.src, Astro.site).href;
-const noindex = Boolean(process.env.DEV_SITE);
+const noindex = Astro.props.noindex || Boolean(process.env.DEV_SITE);
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+// Business card for Google (name, phone, address in search results and Maps).
+const business = {
+  '@context': 'https://schema.org',
+  '@type': 'HomeAndConstructionBusiness',
+  name: stranica.naziv,
+  description: stranica.seo_opis,
+  url: pageUrl,
+  image: ogUrl,
+  telephone: stranica.telefon,
+  email: stranica.email,
+  address: { '@type': 'PostalAddress', streetAddress: stranica.adresa, addressLocality: 'Zadar', addressCountry: 'HR' },
+  areaServed: 'Zadar',
+};
 ---
 <!doctype html>
 <html lang="hr">
@@ -29,7 +44,14 @@ const noindex = Boolean(process.env.DEV_SITE);
     <meta property="og:title" content={title} />
     <meta property="og:description" content={stranica.seo_opis} />
     <meta property="og:image" content={ogUrl} />
-    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site).href} />
+    <meta property="og:url" content={pageUrl} />
+    <!-- Canonical: old WordPress links like /?feed=rss2 serve this page; tell Google the real address. -->
+    {!noindex && (
+      <>
+        <link rel="canonical" href={pageUrl} />
+        <script type="application/ld+json" set:html={JSON.stringify(business)} />
+      </>
+    )}
   </head>
   <body>
     <slot />

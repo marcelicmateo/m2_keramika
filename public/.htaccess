@@ -10,6 +10,10 @@ RewriteCond %{HTTPS} off [OR]
 RewriteCond %{HTTP_HOST} ^www\. [NC]
 RewriteRule ^ https://m2-keramika.hr%{REQUEST_URI} [L,R=301]
 
+# Old WordPress RSS feeds (/?feed=...): gone for good, so Google drops them.
+RewriteCond %{QUERY_STRING} (^|&)feed= [NC]
+RewriteRule ^$ - [G]
+
 # Old WordPress link to the price list.
 RewriteRule ^wp-content/uploads/2026/09/Obrt_JerolimaMise8_1_20092026_0730-List-1\.csv$ /cjenik.csv [L,R=301]
 
